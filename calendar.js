@@ -1,40 +1,50 @@
-export function setEvent(unixTimeEvent, callback) {
-    let unixTimeNow = Math.floor((new Date).getTime()/1000);
-    let interval = unixTimeEvent - unixTimeNow;
+(function (global) {
+    'use strict';
 
-    setTimeout(callback, interval*1000);
-}
+    var Calendar = {};
 
-let events = [];
+    global.Calendar = Calendar;
 
-function Event(date, message) {
-    this.date = date;
-    this.message = message;
-}
+    Calendar.setEvent = function (unixTimeEvent, callback) {
+        var unixTimeNow = Math.floor((new Date).getTime()/1000);
+        var interval = unixTimeEvent - unixTimeNow;
 
-export function addNewEvent(date, message) {
-    let event = new Event(date, message);
-    events.push(event);
-    saveEvents();
-}
+        setTimeout(callback, interval*1000);
+    };
 
-function saveEvents() {
-    let str = JSON.stringify(events);
-    localStorage.setItem("events", str);
-}
+    var events = [];
 
-function getEvents() {
-    let str = localStorage.getItem("events");
-    events = JSON.parse(str);
-    if (!events) {
-        events = [];
+    function Event(date, message) {
+        this.date = date;
+        this.message = message;
     }
-}
 
-export function getMessage(d) {
-    getEvents();
+    Calendar.addNewEvent = function(date, message) {
+        var event = new Event(date, message);
+        events.push(event);
+        saveEvents();
+    };
 
-    let searchDate = d;
-    let mess = events.find(event => event.date === searchDate).message;
-    return mess;
-}
+    function saveEvents() {
+        var str = JSON.stringify(events);
+        localStorage.setItem("events", str);
+    }
+
+    function getEvents() {
+        var str = localStorage.getItem("events");
+        events = JSON.parse(str);
+        if (!events) {
+            events = [];
+        }
+    }
+
+    Calendar.getMessage = function (d) {
+
+        getEvents();
+
+        var searchDate = d;
+        var mess = events.find(function(event) {event.date === searchDate}).message;
+        return mess;
+    }
+
+})();

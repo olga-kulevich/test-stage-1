@@ -1,24 +1,26 @@
-import {setEvent, addNewEvent, getMessage} from './calendar.js';
+(function (Calendar) {
 
-const time = document.getElementById('date'),
-    message = document.getElementById('msg'),
-    btn_save = document.getElementById('btn_save');
+    var time = document.getElementById('date'),
+        message = document.getElementById('msg'),
+        btn_save = document.getElementById('btn_save');
 
-let msg;
-let dateEvent;
+    var msg;
+    var dateEvent;
 
-btn_save.addEventListener('click', function () {
+    btn_save.addEventListener('click', function () {
 
-    dateEvent = time.value;
-    msg = message.value;
+        dateEvent = time.value;
+        msg = message.value;
 
-    addNewEvent(dateEvent, msg);
+        Calendar.addNewEvent(dateEvent, msg);
 
-    msg = getMessage(dateEvent);
+        msg = Calendar.getMessage(dateEvent);
 
-    setEvent(dateEvent, showEvent);
-});
+        Calendar.setEvent(dateEvent, showEvent);
+    });
 
-function showEvent() {
-    alert(msg);
-}
+    function showEvent() {
+        alert(msg);
+    }
+
+})();
