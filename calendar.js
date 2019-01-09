@@ -6,9 +6,17 @@ window.Calendar = (function () {
         setTimeout(callback, interval*1000);
     }
 
+    /**
+     * @type {Event[]}
+     */
     var events = [];
 
-    function Event(date, message) {
+    /**
+     * @param date
+     * @param message
+     * @constructor
+     */
+    function Event (date, message) {
         this.date = date;
         this.message = message;
     }
@@ -37,8 +45,8 @@ window.Calendar = (function () {
         getEvents();
 
         var searchDate = d;
-        var mess = events.find(function(event) {event.date === searchDate}).message;
-        return mess;
+        var foundEvents = events.filter(function(event) {return event.date === searchDate});
+        return foundEvents[0].message;
     }
 
     return {
