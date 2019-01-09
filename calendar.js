@@ -1,16 +1,10 @@
-(function (global) {
-    'use strict';
-
-    var Calendar = {};
-
-    global.Calendar = Calendar;
-
-    Calendar.setEvent = function (unixTimeEvent, callback) {
+window.Calendar = (function () {
+    function setEvent(unixTimeEvent, callback) {
         var unixTimeNow = Math.floor((new Date).getTime()/1000);
         var interval = unixTimeEvent - unixTimeNow;
 
         setTimeout(callback, interval*1000);
-    };
+    }
 
     var events = [];
 
@@ -19,11 +13,11 @@
         this.message = message;
     }
 
-    Calendar.addNewEvent = function(date, message) {
+    function addNewEvent(date, message) {
         var event = new Event(date, message);
         events.push(event);
         saveEvents();
-    };
+    }
 
     function saveEvents() {
         var str = JSON.stringify(events);
@@ -38,7 +32,7 @@
         }
     }
 
-    Calendar.getMessage = function (d) {
+     function getMessage (d) {
 
         getEvents();
 
@@ -47,4 +41,9 @@
         return mess;
     }
 
+    return {
+        getMessage: getMessage,
+        addNewEvent: addNewEvent,
+        setEvent: setEvent
+    };
 })();
