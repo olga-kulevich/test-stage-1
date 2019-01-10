@@ -1,22 +1,20 @@
 var time = document.getElementById('date'),
-    message = document.getElementById('msg'),
+    name = document.getElementById('name'),
     btn_save = document.getElementById('btn_save');
 
-var msg;
+var name;
 var dateEvent;
 
 btn_save.addEventListener('click', function () {
 
-    dateEvent = time.value;
-    msg = message.value;
+    //dateEvent = time.value;
+    //name = name.value;
 
-    Calendar.addNewEvent(dateEvent, msg);
+    Calendar.addEvent();
 
-    msg = Calendar.getMessage(dateEvent);
 
-    Calendar.setEvent(dateEvent, showEvent);
 });
 
 function showEvent() {
-    alert(msg);
+    alert("hi");
 }

@@ -1,10 +1,4 @@
 window.Calendar = (function () {
-    function setEvent(unixTimeEvent, callback) {
-        var unixTimeNow = Math.floor((new Date).getTime()/1000);
-        var interval = unixTimeEvent - unixTimeNow;
-
-        setTimeout(callback, interval*1000);
-    }
 
     /**
      * @type {Event[]}
@@ -12,46 +6,39 @@ window.Calendar = (function () {
     var events = [];
 
     /**
-     * @param date
-     * @param message
+     * @param {number} date
+     * @param {string} name
+     * @param {function} func
      * @constructor
      */
-    function Event (date, message) {
+
+    function Event (date, name, func) {
         this.date = date;
-        this.message = message;
+        this.name = name;
+        this.func = func;
     }
 
-    function addNewEvent(date, message) {
-        var event = new Event(date, message);
+    function addEvent(date, name, func) {
+        var event = new Event(date, name, func);
+        var currentDate = Math.floor((new Date).getTime()/1000);
+        var delay = (date - currentDate + 7)*1000;
+
         events.push(event);
-        saveEvents();
-    }
 
-    function saveEvents() {
-        var str = JSON.stringify(events);
-        localStorage.setItem("events", str);
-    }
+        console.log(event);
+        console.log(event.func);
 
-    function getEvents() {
-        var str = localStorage.getItem("events");
-        events = JSON.parse(str);
-        if (!events) {
-            events = [];
-        }
+        setTimeout(function() {event.func()}, delay);
     }
 
      function getMessage (d) {
 
-        getEvents();
-
         var searchDate = d;
         var foundEvents = events.filter(function(event) {return event.date === searchDate});
-        return foundEvents[0].message;
+        return foundEvents[0].name;
     }
 
     return {
-        getMessage: getMessage,
-        addNewEvent: addNewEvent,
-        setEvent: setEvent
+        addEvent: addEvent
     };
 })();
