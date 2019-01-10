@@ -2,8 +2,6 @@ var time = document.getElementById('date'),
     name = document.getElementById('name'),
     btn_save = document.getElementById('btn_save');
 
-var name;
-var dateEvent;
 
 btn_save.addEventListener('click', function () {
 
@@ -11,10 +9,8 @@ btn_save.addEventListener('click', function () {
     //name = name.value;
 
     Calendar.addEvent();
+    Calendar.deleteEvent();
+    Calendar.updateEvent();
 
 
 });
-
-function showEvent() {
-    alert("hi");
-}
