@@ -27,7 +27,7 @@ window.Calendar = (function () {
     function addEvent(date, name, func) {
         var event = new Event(date, name, func);
         var currentDate = Math.floor((new Date).getTime()/1000);
-        var delay = (date - currentDate + 7)*1000;
+        var delay = (date - currentDate)*1000;
 
         events.push(event);
 
