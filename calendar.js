@@ -40,22 +40,28 @@ window.Calendar = (function () {
     }
 
     var eventsList = new EventsList();
+    
     var observer = new Observer(function(updatedEventList) {
+        var timerId;
+        //ищем ближайшее событие и отправляем его на выполнение
+        var arr = updatedEventList.map(function(a) {return a.date});
+        console.log(arr);
+        var min = arr.reduce(function(a, b) {return ( a < b ? a : b )});
+        var foundNearestEvent = updatedEventList.filter(function(event)
+        {return (event.date === min)});
 
-        console.log(updatedEventList);
-        //var timerId;
-        //clearTimeout(timerId);
+        console.log(foundNearestEvent);
 
-        /*ищем ближайшее событие и отправляем его на выполнение
-        var arr = updatedEventList.events;
-        var foundNearestEvent = arr.filter(function(event) {return Math.min(event.date)});
-        console.log(foundNearestEvent);*/
+        var currentDate = Math.floor((new Date).getTime()/1000);
+        var delay = (foundNearestEvent[0].date - currentDate)*1000;
 
-        //const min = arr.reduce((a, b) => Math.min(a, b))
-        //timerId = setTimeout(function() {event.func()}, delay);
+        function stop() {
+            clearTimeout(timerId);
+        }
+        stop();
 
-        //var currentDate = Math.floor((new Date).getTime()/1000);
-        //var delay = (date - currentDate)*1000;
+        timerId = setTimeout(function() {foundNearestEvent[0].func()}, delay);
+
     });
 
     eventsList.addObserver(observer);
