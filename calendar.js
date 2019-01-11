@@ -13,6 +13,42 @@ window.Calendar = (function () {
         this.func = func;
     }
 
+    /**
+     * @param {number} date
+     * @param {string} name
+     * @param {function} func
+     *
+     */
+    function addEvent(date, name, func) {
+        var event = new Event(date, name, func);
+        var updatedEvents = eventsList.add(event);
+        eventsList.sendEvents(updatedEvents);
+    }
+
+    /**
+     * @param {string} name
+     *
+     */
+    function deleteEvent(name) {
+        var updatedEvents = eventsList.delete(name);
+        eventsList.sendEvents(updatedEvents);
+    }
+
+    /**
+     * @param {string} name - existing event name
+     * @param {string} newName - new event name
+     * @param {number} newDate - new event date
+     *
+     */
+    function updateEvent(name, newName, newDate) {
+        var updatedEvents = eventsList.update(name, newName, newDate);
+        eventsList.sendEvents(updatedEvents);
+    }
+
+    /**
+     *
+     * @constructor
+     */
     function EventsList() {
         var events = [];
         var observers = [];
@@ -30,9 +66,31 @@ window.Calendar = (function () {
         this.add = function(event) {
             events.push(event);
             return events;
-        }
+        };
+
+        this.update = function(name, newName, newDate) {
+            var foundEvent = events.filter(function(event) {return event.name === name});
+            if (newName) {
+                foundEvent[0].name = newName;
+            }
+            if (newDate) {
+                foundEvent[0].date = newDate;
+            }
+            return events;
+        };
+
+        this.delete = function(name) {
+            var foundEvents = events.filter(function(event) {return event.name === name});
+            var index = events.indexOf(foundEvents[0]);
+            events.splice(index, 1);
+            return events;
+        };
     }
-    
+
+    /**
+     * @param {function} behavior
+     * @constructor
+     */
     function Observer(behavior) {
         this.notify = function(updatedEventList) {
             behavior(updatedEventList);
@@ -40,10 +98,12 @@ window.Calendar = (function () {
     }
 
     var eventsList = new EventsList();
-    
+
     var observer = new Observer(function(updatedEventList) {
         var timerId;
-        //ищем ближайшее событие и отправляем его на выполнение
+
+        stop();
+
         var arr = updatedEventList.map(function(a) {return a.date});
         console.log(arr);
         var min = arr.reduce(function(a, b) {return ( a < b ? a : b )});
@@ -58,7 +118,6 @@ window.Calendar = (function () {
         function stop() {
             clearTimeout(timerId);
         }
-        stop();
 
         timerId = setTimeout(function() {foundNearestEvent[0].func()}, delay);
 
@@ -66,54 +125,9 @@ window.Calendar = (function () {
 
     eventsList.addObserver(observer);
 
-    /**
-     * @param {number} date
-     * @param {string} name
-     * @param {function} func
-     *
-     */
-    function addEvent(date, name, func) {
-        var event = new Event(date, name, func);
-        var updatedEvents = eventsList.add(event);
-        eventsList.sendEvents(updatedEvents);
-    }
-
-
-    /**
-     * @param {string} name
-     *
-     */
-    /*function deleteEvent(name) {
-        var foundEvents = eventsList.events.filter(function(event) {return event.name === name});
-        var index = eventsList.events.indexOf(foundEvents[0]);
-        eventsList.events.splice(index, 1);
-
-        console.log(eventsList.events);
-    }*/
-
-    /**
-     * @param {string} name - existing event name
-     * @param {string} newName - new event name
-     * @param {number} newDate - new event date
-     *
-     */
-    /*function updateEvent(name, newName, newDate) {
-        var foundEvent = eventsList.events.filter(function(event) {return event.name === name});
-
-        if (newName) {
-            foundEvent[0].name = newName;
-        }
-
-        if (newDate) {
-            foundEvent[0].date = newDate;
-        }
-
-        console.log(eventsList.events);
-    }*/
-
     return {
-        addEvent: addEvent
-        /*deleteEvent: deleteEvent,
-        updateEvent: updateEvent*/
+        addEvent: addEvent,
+        deleteEvent: deleteEvent,
+        updateEvent: updateEvent
     };
 })();
