@@ -8,7 +8,10 @@ btn_save.addEventListener('click', function () {
     //dateEvent = time.value;
     //name = name.value;
 
-    Calendar.addEvent();
+    Calendar.addEvent(Math.floor((new Date).getTime()/1000+7), "aaaa",
+        function () {console.log("callback 11111!")});
+    Calendar.addEvent(Math.floor((new Date).getTime()/1000+10), "aaaa",
+        function () {console.log("callback 22222!")});
     Calendar.deleteEvent();
     Calendar.updateEvent();
 
