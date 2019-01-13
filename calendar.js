@@ -20,8 +20,7 @@ window.Calendar = (function() {
      */
     function addEvent(date, name, func) {
         var event = new Event(date, name, func);
-        var updatedEvents = eventsList.add(event);
-        eventsList.sendEvents(updatedEvents);
+        eventsList.add(event);
     }
 
     /**
@@ -29,19 +28,17 @@ window.Calendar = (function() {
      *
      */
     function deleteEvent(name) {
-        var updatedEvents = eventsList.delete(name);
-        eventsList.sendEvents(updatedEvents);
+        eventsList.delete(name);
     }
 
     /**
      * @param {string} name - existing event name
-     * @param {string} newName - new event name
-     * @param {number} newDate - new event date
+     * @param {string|null} newName - new event name
+     * @param {number|null} newDate - new event date
      *
      */
     function updateEvent(name, newName, newDate) {
-        var updatedEvents = eventsList.update(name, newName, newDate);
-        eventsList.sendEvents(updatedEvents);
+        eventsList.update(name, newName, newDate);
     }
 
     /**
@@ -64,7 +61,7 @@ window.Calendar = (function() {
 
         this.add = function(event) {
             events.push(event);
-            return events;
+            this.sendEvents(events);
         };
 
         this.update = function(name, newName, newDate) {
@@ -77,7 +74,8 @@ window.Calendar = (function() {
             if (newDate) {
                 foundEvent[0].date = newDate;
             }
-            return events;
+            this.sendEvents(events);
+
         };
 
         this.delete = function(name) {
@@ -86,52 +84,49 @@ window.Calendar = (function() {
             });
             var index = events.indexOf(foundEvents[0]);
             events.splice(index, 1);
-            return events;
+            this.sendEvents(events);
         };
+
+        this.getAllEvents = function() {
+            return events;
+        }
     }
 
     /**
-     * @param {function} behavior
+     *
      * @constructor
      */
-    function Observer(behavior) {
+    function Observer() {
+        var timerId;
         this.notify = function(updatedEventList) {
-            behavior(updatedEventList);
+
+            clearTimeout(timerId);
+
+            var arr = updatedEventList.map(function(a) {
+                return a.date
+            });
+            //console.log(arr);
+            var min = arr.reduce(function(a, b) {
+                return (a < b ? a : b)
+            });
+            var foundNearestEvent = updatedEventList.filter(function(event) {
+                return (event.date === min)
+            });
+
+            //console.log(foundNearestEvent);
+
+            var currentDate = Math.floor((new Date).getTime() / 1000);
+            var delay = (foundNearestEvent[0].date - currentDate) * 1000;
+
+            timerId = setTimeout(function() {
+                foundNearestEvent[0].func()
+            }, delay);
         }
     }
 
     var eventsList = new EventsList();
 
-    var observer = new Observer(function(updatedEventList) {
-        var timerId;
-
-        stop();
-
-        var arr = updatedEventList.map(function(a) {
-            return a.date
-        });
-        console.log(arr);
-        var min = arr.reduce(function(a, b) {
-            return (a < b ? a : b)
-        });
-        var foundNearestEvent = updatedEventList.filter(function(event) {
-            return (event.date === min)
-        });
-
-        console.log(foundNearestEvent);
-
-        var currentDate = Math.floor((new Date).getTime() / 1000);
-        var delay = (foundNearestEvent[0].date - currentDate) * 1000;
-
-        function stop() {
-            clearTimeout(timerId);
-        }
-
-        timerId = setTimeout(function() {
-            foundNearestEvent[0].func()
-        }, delay);
-
-    });
+    var observer = new Observer();
 
     eventsList.addObserver(observer);
 
