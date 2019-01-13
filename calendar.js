@@ -1,4 +1,4 @@
-window.Calendar = (function () {
+window.Calendar = (function() {
 
     /**
      * @param {number} date
@@ -6,7 +6,6 @@ window.Calendar = (function () {
      * @param {function} func
      * @constructor
      */
-
     function Event(date, name, func) {
         this.date = date;
         this.name = name;
@@ -52,12 +51,12 @@ window.Calendar = (function () {
     function EventsList() {
         var events = [];
         var observers = [];
-        
-        this.addObserver = function (observer) {
+
+        this.addObserver = function(observer) {
             observers.push(observer);
         };
 
-        this.sendEvents = function (updatedEvents) {
+        this.sendEvents = function(updatedEvents) {
             for (var i = 0, len = observers.length; i < len; i++) {
                 observers[i].notify(updatedEvents);
             }
@@ -69,7 +68,9 @@ window.Calendar = (function () {
         };
 
         this.update = function(name, newName, newDate) {
-            var foundEvent = events.filter(function(event) {return event.name === name});
+            var foundEvent = events.filter(function(event) {
+                return event.name === name
+            });
             if (newName) {
                 foundEvent[0].name = newName;
             }
@@ -80,7 +81,9 @@ window.Calendar = (function () {
         };
 
         this.delete = function(name) {
-            var foundEvents = events.filter(function(event) {return event.name === name});
+            var foundEvents = events.filter(function(event) {
+                return event.name === name
+            });
             var index = events.indexOf(foundEvents[0]);
             events.splice(index, 1);
             return events;
@@ -104,22 +107,29 @@ window.Calendar = (function () {
 
         stop();
 
-        var arr = updatedEventList.map(function(a) {return a.date});
+        var arr = updatedEventList.map(function(a) {
+            return a.date
+        });
         console.log(arr);
-        var min = arr.reduce(function(a, b) {return ( a < b ? a : b )});
-        var foundNearestEvent = updatedEventList.filter(function(event)
-        {return (event.date === min)});
+        var min = arr.reduce(function(a, b) {
+            return (a < b ? a : b)
+        });
+        var foundNearestEvent = updatedEventList.filter(function(event) {
+            return (event.date === min)
+        });
 
         console.log(foundNearestEvent);
 
-        var currentDate = Math.floor((new Date).getTime()/1000);
-        var delay = (foundNearestEvent[0].date - currentDate)*1000;
+        var currentDate = Math.floor((new Date).getTime() / 1000);
+        var delay = (foundNearestEvent[0].date - currentDate) * 1000;
 
         function stop() {
             clearTimeout(timerId);
         }
 
-        timerId = setTimeout(function() {foundNearestEvent[0].func()}, delay);
+        timerId = setTimeout(function() {
+            foundNearestEvent[0].func()
+        }, delay);
 
     });
 
