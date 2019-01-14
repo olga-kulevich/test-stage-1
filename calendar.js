@@ -1,25 +1,25 @@
 window.Calendar = (function() {
 
     /**
-     * @param {number} date
+     * @param {number} time
      * @param {string} name
      * @param {function} func
      * @constructor
      */
-    function Event(date, name, func) {
-        this.date = date;
+    function Event(time, name, func) {
+        this.time = time;
         this.name = name;
         this.func = func;
     }
 
     /**
-     * @param {number} date
+     * @param {number} time
      * @param {string} name
      * @param {function} func
      *
      */
-    function addEvent(date, name, func) {
-        var event = new Event(date, name, func);
+    function addEvent(time, name, func) {
+        var event = new Event(time, name, func);
         eventsList.add(event);
     }
 
@@ -34,18 +34,18 @@ window.Calendar = (function() {
     /**
      * @param {string} name - existing event name
      * @param {string|null} newName - new event name
-     * @param {number|null} newDate - new event date
+     * @param {number|null} newTime - new event time
      *
      */
-    function updateEvent(name, newName, newDate) {
-        eventsList.update(name, newName, newDate);
+    function updateEvent(name, newName, newTime) {
+        eventsList.update(name, newName, newTime);
     }
 
     /**
      *
      * @constructor
      */
-    function EventsList() {
+    function Events() {
         var events = [];
         var observers = [];
 
@@ -53,38 +53,38 @@ window.Calendar = (function() {
             observers.push(observer);
         };
 
-        this.sendEvents = function(updatedEvents) {
+        this.sendUpdatedEventsList = function(updatedEventsList) {
             for (var i = 0, len = observers.length; i < len; i++) {
-                observers[i].notify(updatedEvents);
+                observers[i].notify(updatedEventsList);
             }
         };
 
         this.add = function(event) {
             events.push(event);
-            this.sendEvents(events);
+            this.sendUpdatedEventsList(events);
         };
 
-        this.update = function(name, newName, newDate) {
-            var foundEvent = events.filter(function(event) {
+        this.update = function(name, newName, newTime) {
+            var foundedEvents = events.filter(function(event) {
                 return event.name === name
             });
             if (newName) {
-                foundEvent[0].name = newName;
+                foundedEvents[0].name = newName;
             }
-            if (newDate) {
-                foundEvent[0].date = newDate;
+            if (newTime) {
+                foundedEvents[0].time = newTime;
             }
-            this.sendEvents(events);
+            this.sendUpdatedEventsList(events);
 
         };
 
         this.delete = function(name) {
-            var foundEvents = events.filter(function(event) {
+            var foundedEvent = events.filter(function(event) {
                 return event.name === name
             });
-            var index = events.indexOf(foundEvents[0]);
-            events.splice(index, 1);
-            this.sendEvents(events);
+            var indexDeletedEvent = events.indexOf(foundedEvent[0]);
+            events.splice(indexDeletedEvent, 1);
+            this.sendUpdatedEventsList(events);
         };
 
         this.getAllEvents = function() {
@@ -97,34 +97,61 @@ window.Calendar = (function() {
      * @constructor
      */
     function Observer() {
+        var that = this;
+        var nearestTime;
         var timerId;
-        this.notify = function(updatedEventList) {
+        var currentTime = Math.floor((new Date).getTime() / 1000);
 
-            clearTimeout(timerId);
+        this.notify = function(updatedEventsList) {
+            if (updatedEventsList.length > 0) {
+                clearTimeout(timerId);
 
-            var arr = updatedEventList.map(function(a) {
-                return a.date
-            });
-            //console.log(arr);
-            var min = arr.reduce(function(a, b) {
-                return (a < b ? a : b)
-            });
-            var foundNearestEvent = updatedEventList.filter(function(event) {
-                return (event.date === min)
-            });
+                var timesList = updatedEventsList.map(function(event) {
+                    return event.time
+                });
 
-            //console.log(foundNearestEvent);
+                if (timesList.length === 1) {
+                    nearestTime = timesList[0];
+                } else {
+                    nearestTime = timesList.reduce(function(a, b) {
+                        return (a < b ? a : b)
+                    });
+                }
 
-            var currentDate = Math.floor((new Date).getTime() / 1000);
-            var delay = (foundNearestEvent[0].date - currentDate) * 1000;
+                var delay = (nearestTime - currentTime) * 1000;
 
-            timerId = setTimeout(function() {
-                foundNearestEvent[0].func()
-            }, delay);
+                timerId = setTimeout(function() {
+                    that.processEventsInTime(nearestTime)
+                    }, delay);
+            }
+        };
+
+        this.processEventsInTime = function (nearestTime) {
+            var updatedEventsList = eventsList.getAllEvents();
+
+                var foundedNearestEvents = updatedEventsList.filter(function(event) {
+                    return (event.time === nearestTime)
+                });
+
+                var eventsListWithoutDuringTime = updatedEventsList.filter(function(event) {
+                    return (event.time >  nearestTime);
+                });
+
+                that.notify(eventsListWithoutDuringTime);
+
+            for (var i = 0; i < foundedNearestEvents.length; i++) {
+                (function(){
+                    var delay = (nearestTime - currentTime) * 1000;
+                    var event =  foundedNearestEvents[i];
+                    timerId = setTimeout(function() {
+                        event.func()
+                    }, delay);
+                })();
+            }
         }
     }
 
-    var eventsList = new EventsList();
+    var eventsList = new Events();
 
     var observer = new Observer();
 
