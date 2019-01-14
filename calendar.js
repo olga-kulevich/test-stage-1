@@ -53,6 +53,10 @@ window.Calendar = (function() {
         eventsList.getForWeek();
     }
 
+    function getEventsForPeriod(startOfPeriod, endOfPeriod) {
+        eventsList.getForPeriod(startOfPeriod, endOfPeriod);
+    }
+
     /**
      *
      * @constructor
@@ -139,7 +143,25 @@ window.Calendar = (function() {
                 return (event.time > startOfWeek && event.time < endOfWeek)
             });
             console.log(foundedEvents);
-        }
+        };
+
+        this.getForPeriod = function(startOfPeriod, endOfPeriod) {
+            /*var foundedEvents = events.filter(function (event) {
+                return (event.time > startOfPeriod && event.time < endOfPeriod)
+            });*/
+
+            var foundedEvents;
+            if (!endOfPeriod) {
+                foundedEvents = events.filter(function(event) {
+                    return (event.time > startOfPeriod)
+                });
+            } else {
+                foundedEvents = events.filter(function(event) {
+                    return (event.time > startOfPeriod && event.time < endOfPeriod)
+                });
+            }
+            console.log(foundedEvents);
+        };
     }
 
     /**
@@ -213,6 +235,7 @@ window.Calendar = (function() {
         updateEvent: updateEvent,
         getEventsForDay: getEventsForDay,
         getEventsForMonth: getEventsForMonth,
-        getEventsForWeek: getEventsForWeek
+        getEventsForWeek: getEventsForWeek,
+        getEventsForPeriod: getEventsForPeriod
     };
 })();
