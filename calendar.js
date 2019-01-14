@@ -45,6 +45,10 @@ window.Calendar = (function() {
         eventsList.getForDay();
     }
 
+    function getEventsForMonth() {
+        eventsList.getForMonth();
+    }
+
     /**
      *
      * @constructor
@@ -102,6 +106,18 @@ window.Calendar = (function() {
             var endOfDay = startOfDay + 86400;
             var foundedEvents = events.filter(function(event) {
                 return (event.time > startOfDay && event.time < endOfDay)
+            });
+            console.log(foundedEvents);
+        };
+        this.getForMonth = function() {
+            var currentTime = new Date;
+            currentTime.setHours(0,0,0, 0);
+            currentTime.setDate(1);
+            var startOfMonth = currentTime / 1000;
+            currentTime.setMonth(currentTime.getMonth() + 1);
+            var endOfMonth = currentTime / 1000;
+            var foundedEvents = events.filter(function(event) {
+                return (event.time > startOfMonth && event.time < endOfMonth)
             });
             console.log(foundedEvents);
         }
@@ -176,6 +192,7 @@ window.Calendar = (function() {
         addEvent: addEvent,
         deleteEvent: deleteEvent,
         updateEvent: updateEvent,
-        getEventsForDay: getEventsForDay
+        getEventsForDay: getEventsForDay,
+        getEventsForMonth: getEventsForMonth
     };
 })();

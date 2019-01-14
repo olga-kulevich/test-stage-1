@@ -49,3 +49,18 @@ Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 86400), "b",
     });
 Calendar.getEventsForDay();
 */
+
+//получить все события за текущий месяц
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2592000), "a",
+    function() {
+        console.log("callback 11111!")
+    });
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 86400), "b",
+    function() {
+        console.log("callback 22222!")
+    });
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "c",
+    function() {
+        console.log("callback 33333!")
+    });
+Calendar.getEventsForMonth();
