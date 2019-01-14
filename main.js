@@ -85,6 +85,7 @@ Calendar.getEventsForWeek();
 */
 
 //получить все события за указанный период
+/*
 Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 604820), "a",
     function () {
         console.log("callback 11111!")
@@ -99,3 +100,4 @@ Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "c",
     });
 Calendar.getEventsForPeriod(Math.floor((new Date).getTime() / 1000), (Math.floor((new Date).getTime() / 1000) + 172800));
 Calendar.getEventsForPeriod(Math.floor((new Date).getTime() / 1000));
+*/

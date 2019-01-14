@@ -146,10 +146,6 @@ window.Calendar = (function() {
         };
 
         this.getForPeriod = function(startOfPeriod, endOfPeriod) {
-            /*var foundedEvents = events.filter(function (event) {
-                return (event.time > startOfPeriod && event.time < endOfPeriod)
-            });*/
-
             var foundedEvents;
             if (!endOfPeriod) {
                 foundedEvents = events.filter(function(event) {
