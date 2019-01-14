@@ -49,12 +49,15 @@ window.Calendar = (function() {
         eventsList.getForMonth();
     }
 
+    function getEventsForWeek() {
+        eventsList.getForWeek();
+    }
+
     /**
      *
      * @constructor
      */
     function Events() {
-        var that = this;
         var events = [];
         var observers = [];
 
@@ -84,7 +87,6 @@ window.Calendar = (function() {
                 foundedEvents[0].time = newTime;
             }
             this.sendUpdatedEventsList(events);
-
         };
 
         this.delete = function(name) {
@@ -109,6 +111,7 @@ window.Calendar = (function() {
             });
             console.log(foundedEvents);
         };
+
         this.getForMonth = function() {
             var currentTime = new Date;
             currentTime.setHours(0,0,0, 0);
@@ -118,6 +121,22 @@ window.Calendar = (function() {
             var endOfMonth = currentTime / 1000;
             var foundedEvents = events.filter(function(event) {
                 return (event.time > startOfMonth && event.time < endOfMonth)
+            });
+            console.log(foundedEvents);
+        };
+
+        this.getForWeek = function() {
+            var currentTime = new Date;
+            currentTime.setHours(0,0,0, 0);
+            var dayOfStartWeek = 0;
+            var currentDay = currentTime.getDay();
+            var distance = dayOfStartWeek - currentDay;
+            var startOfWeek = (currentTime.setDate(currentTime.getDate() + distance)) / 1000;
+
+            var endOfWeek = startOfWeek + 604800;
+
+            var foundedEvents = events.filter(function(event) {
+                return (event.time > startOfWeek && event.time < endOfWeek)
             });
             console.log(foundedEvents);
         }
@@ -193,6 +212,7 @@ window.Calendar = (function() {
         deleteEvent: deleteEvent,
         updateEvent: updateEvent,
         getEventsForDay: getEventsForDay,
-        getEventsForMonth: getEventsForMonth
+        getEventsForMonth: getEventsForMonth,
+        getEventsForWeek: getEventsForWeek
     };
 })();
