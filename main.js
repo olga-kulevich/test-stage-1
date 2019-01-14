@@ -1,6 +1,6 @@
-
 // проверка удаления
-/*Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 7), "a",
+/*
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 7), "a",
     function() {
         console.log("callback 11111!")
     });
@@ -9,9 +9,11 @@ Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 10), "b",
         console.log("callback 22222!")
     });
 Calendar.updateEvent('a', 'c');
-Calendar.deleteEvent('c');*/
+Calendar.deleteEvent('c');
+*/
 
 //проверка выполнения нескольких событий друг за другом
+/*
 Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 5), "a",
     function() {
         console.log("callback 1!")
@@ -33,3 +35,17 @@ Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 11), "d",
     function() {
         console.log("callback 4!")
     });
+*/
+
+//получить все события за текущий день
+/*
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "a",
+    function() {
+        console.log("callback 11111!")
+    });
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 86400), "b",
+    function() {
+        console.log("callback 22222!")
+    });
+Calendar.getEventsForDay();
+*/

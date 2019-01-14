@@ -40,12 +40,17 @@ window.Calendar = (function() {
     function updateEvent(name, newName, newTime) {
         eventsList.update(name, newName, newTime);
     }
+    
+    function getEventsForDay() {
+        eventsList.getForDay();
+    }
 
     /**
      *
      * @constructor
      */
     function Events() {
+        var that = this;
         var events = [];
         var observers = [];
 
@@ -89,6 +94,16 @@ window.Calendar = (function() {
 
         this.getAllEvents = function() {
             return events;
+        };
+
+        this.getForDay = function() {
+            var currentTime = new Date;
+            var startOfDay = (currentTime.setHours(0,0,0, 0) / 1000);
+            var endOfDay = startOfDay + 86400;
+            var foundedEvents = events.filter(function(event) {
+                return (event.time > startOfDay && event.time < endOfDay)
+            });
+            console.log(foundedEvents);
         }
     }
 
@@ -160,6 +175,7 @@ window.Calendar = (function() {
     return {
         addEvent: addEvent,
         deleteEvent: deleteEvent,
-        updateEvent: updateEvent
+        updateEvent: updateEvent,
+        getEventsForDay: getEventsForDay
     };
 })();
