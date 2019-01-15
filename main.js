@@ -8,8 +8,22 @@ Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 10), "b",
     function() {
         console.log("callback 22222!")
     });
-Calendar.updateEvent('a', 'c');
-Calendar.deleteEvent('c');
+Calendar.deleteEvent('a');
+*/
+
+//проверка обновления события
+/*
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 3), "a",
+    function() {
+        console.log("callback 11111!")
+    });
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "b",
+    function() {
+        console.log("callback 22222!")
+    });
+
+Calendar.updateEvent('a', 'c', null);
+Calendar.updateEvent('c', null, Math.floor((new Date).getTime() / 1000 + 2));
 */
 
 //проверка выполнения нескольких событий друг за другом
@@ -39,15 +53,19 @@ Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 11), "d",
 
 //получить все события за текущий день
 /*
-Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "a",
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 5), "a",
     function() {
         console.log("callback 11111!")
     });
-Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 86400), "b",
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 86401), "b",
     function() {
         console.log("callback 22222!")
     });
-Calendar.getEventsForDay();
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 86400), "b",
+    function() {
+        console.log("callback 33333!")
+    });
+console.log(Calendar.getEventsForDay());
 */
 
 //получить все события за текущий месяц
@@ -64,7 +82,7 @@ Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "c",
     function() {
         console.log("callback 33333!")
     });
-Calendar.getEventsForMonth();
+console.log(Calendar.getEventsForMonth());
 */
 
 //получить все события за текущую неделю
@@ -81,7 +99,8 @@ Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "c",
     function() {
         console.log("callback 33333!")
     });
-Calendar.getEventsForWeek();
+
+console.log(Calendar.getEventsForWeek());
 */
 
 //получить все события за указанный период
@@ -98,6 +117,9 @@ Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "c",
     function () {
         console.log("callback 33333!")
     });
-Calendar.getEventsForPeriod(Math.floor((new Date).getTime() / 1000), (Math.floor((new Date).getTime() / 1000) + 172800));
-Calendar.getEventsForPeriod(Math.floor((new Date).getTime() / 1000));
+
+console.log(Calendar.getEventsForPeriod(Math.floor((new Date).getTime() / 1000),
+(Math.floor((new Date).getTime() / 1000) + 172800)));
+
+console.log(Calendar.getEventsForPeriod(Math.floor((new Date).getTime() / 1000)));
 */

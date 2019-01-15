@@ -42,19 +42,64 @@ window.Calendar = (function() {
     }
     
     function getEventsForDay() {
-        eventsList.getForDay();
-    }
-
-    function getEventsForMonth() {
-        eventsList.getForMonth();
+        var events = eventsList.getAllEvents();
+        var currentTime = new Date;
+        var tomorrow = new Date;
+        currentTime.setHours(0,0,0, 0);
+        tomorrow.setDate(currentTime.getDate() + 1);
+        return (events.filter(function(event) {
+            return (event.time > currentTime / 1000 && event.time < tomorrow / 1000)
+        }));
     }
 
     function getEventsForWeek() {
-        eventsList.getForWeek();
+        var events = eventsList.getAllEvents();
+        var currentTime = new Date;
+        var startOfWeek = new Date;
+        var endOfWeek = new Date;
+
+        currentTime.setHours(0,0,0, 0);
+
+        var dayOfStartWeek = 0;
+        var currentDay = currentTime.getDay();
+        var distance = dayOfStartWeek - currentDay;
+        startOfWeek.setDate(currentTime.getDate() + distance);
+
+        endOfWeek.setDate(startOfWeek.getDate() + 7);
+
+        return events.filter(function(event) {
+            return (event.time > startOfWeek / 1000 && event.time < endOfWeek / 1000)
+        });
+    }
+
+    function getEventsForMonth() {
+        var events = eventsList.getAllEvents();
+        var currentTime = new Date;
+        currentTime.setHours(0,0,0, 0);
+        var startOfMonth =  currentTime.setDate(1) / 1000;
+        var endOfMonth = currentTime.setMonth(currentTime.getMonth() + 1) / 1000;
+        return events.filter(function(event) {
+            return (event.time > startOfMonth && event.time < endOfMonth)
+        });
     }
 
     function getEventsForPeriod(startOfPeriod, endOfPeriod) {
-        eventsList.getForPeriod(startOfPeriod, endOfPeriod);
+        var events = eventsList.getAllEvents();
+        var foundedEvents;
+        if (!endOfPeriod) {
+            foundedEvents = events.filter(function (event) {
+                return (event.time > startOfPeriod)
+            });
+        } else if (!startOfPeriod) {
+            foundedEvents = events.filter(function (event) {
+                return (event.time < endOfPeriod)
+            });
+        } else {
+            foundedEvents = events.filter(function (event) {
+                return (event.time > startOfPeriod && event.time < endOfPeriod)
+            });
+        }
+        return foundedEvents;
     }
 
     /**
@@ -69,7 +114,7 @@ window.Calendar = (function() {
             observers.push(observer);
         };
 
-        this.sendUpdatedEventsList = function(updatedEventsList) {
+        this.notifyAboutChanging = function(updatedEventsList) {
             for (var i = 0, len = observers.length; i < len; i++) {
                 observers[i].notify(updatedEventsList);
             }
@@ -77,7 +122,7 @@ window.Calendar = (function() {
 
         this.add = function(event) {
             events.push(event);
-            this.sendUpdatedEventsList(events);
+            this.notifyAboutChanging(events);
         };
 
         this.update = function(name, newName, newTime) {
@@ -87,10 +132,11 @@ window.Calendar = (function() {
             if (newName) {
                 foundedEvents[0].name = newName;
             }
+
             if (newTime) {
                 foundedEvents[0].time = newTime;
             }
-            this.sendUpdatedEventsList(events);
+            this.notifyAboutChanging(events);
         };
 
         this.delete = function(name) {
@@ -99,64 +145,12 @@ window.Calendar = (function() {
             });
             var indexDeletedEvent = events.indexOf(foundedEvent[0]);
             events.splice(indexDeletedEvent, 1);
-            this.sendUpdatedEventsList(events);
+
+            this.notifyAboutChanging(events);
         };
 
         this.getAllEvents = function() {
             return events;
-        };
-
-        this.getForDay = function() {
-            var currentTime = new Date;
-            var startOfDay = (currentTime.setHours(0,0,0, 0) / 1000);
-            var endOfDay = startOfDay + 86400;
-            var foundedEvents = events.filter(function(event) {
-                return (event.time > startOfDay && event.time < endOfDay)
-            });
-            console.log(foundedEvents);
-        };
-
-        this.getForMonth = function() {
-            var currentTime = new Date;
-            currentTime.setHours(0,0,0, 0);
-            currentTime.setDate(1);
-            var startOfMonth = currentTime / 1000;
-            currentTime.setMonth(currentTime.getMonth() + 1);
-            var endOfMonth = currentTime / 1000;
-            var foundedEvents = events.filter(function(event) {
-                return (event.time > startOfMonth && event.time < endOfMonth)
-            });
-            console.log(foundedEvents);
-        };
-
-        this.getForWeek = function() {
-            var currentTime = new Date;
-            currentTime.setHours(0,0,0, 0);
-            var dayOfStartWeek = 0;
-            var currentDay = currentTime.getDay();
-            var distance = dayOfStartWeek - currentDay;
-            var startOfWeek = (currentTime.setDate(currentTime.getDate() + distance)) / 1000;
-
-            var endOfWeek = startOfWeek + 604800;
-
-            var foundedEvents = events.filter(function(event) {
-                return (event.time > startOfWeek && event.time < endOfWeek)
-            });
-            console.log(foundedEvents);
-        };
-
-        this.getForPeriod = function(startOfPeriod, endOfPeriod) {
-            var foundedEvents;
-            if (!endOfPeriod) {
-                foundedEvents = events.filter(function(event) {
-                    return (event.time > startOfPeriod)
-                });
-            } else {
-                foundedEvents = events.filter(function(event) {
-                    return (event.time > startOfPeriod && event.time < endOfPeriod)
-                });
-            }
-            console.log(foundedEvents);
         };
     }
 
@@ -171,6 +165,10 @@ window.Calendar = (function() {
         var currentTime = Math.floor((new Date).getTime() / 1000);
 
         this.notify = function(updatedEventsList) {
+            that.startNewTimer(updatedEventsList);
+        };
+
+        this.startNewTimer = function(updatedEventsList) {
             if (updatedEventsList.length > 0) {
                 clearTimeout(timerId);
 
@@ -190,7 +188,7 @@ window.Calendar = (function() {
 
                 timerId = setTimeout(function() {
                     that.processEventsInTime(nearestTime)
-                    }, delay);
+                }, delay);
             }
         };
 
@@ -208,7 +206,7 @@ window.Calendar = (function() {
                 that.notify(eventsListWithoutDuringTime);
 
             for (var i = 0; i < foundedNearestEvents.length; i++) {
-                (function(){
+                (function() {
                     var delay = (nearestTime - currentTime) * 1000;
                     var event =  foundedNearestEvents[i];
                     timerId = setTimeout(function() {
