@@ -93,21 +93,14 @@ window.Calendar = (function() {
 
     function getEventsForPeriod(startOfPeriod, endOfPeriod) {
         var events = eventsList.getAllEvents();
-        var foundedEvents;
-        if (!endOfPeriod) {
-            foundedEvents = events.filter(function (event) {
-                return (event.time > startOfPeriod)
-            });
-        } else if (!startOfPeriod) {
-            foundedEvents = events.filter(function (event) {
-                return (event.time < endOfPeriod)
-            });
-        } else {
-            foundedEvents = events.filter(function (event) {
-                return (event.time > startOfPeriod && event.time < endOfPeriod)
-            });
+
+        if (!startOfPeriod || !endOfPeriod) {
+            console.error('');
+            return;
         }
-        return foundedEvents;
+        return events.filter(function (event) {
+            return (event.time > startOfPeriod && event.time < endOfPeriod)
+        });
     }
 
     /**
@@ -134,27 +127,32 @@ window.Calendar = (function() {
         };
 
         this.update = function(name, newName, newTime) {
-            var foundedEvents = events.filter(function(event) {
-                return event.name === name
-            });
-            if (newName) {
-                foundedEvents[0].name = newName;
-            }
-
-            if (newTime) {
-                foundedEvents[0].time = newTime;
-            }
+            // var foundedEvent = events.find(function(event) {
+            //     return event.name === name
+            // }) || {};
+            // if (newName) {
+            //     foundedEvent.name = newName;
+            // }
+            //
+            // if (newTime) {
+            //     foundedEvent.time = newTime;
+            // }
+            var foundedEvent = events.map(function(event) {
+                    if (event.name === name) {
+                        if (newName) foundedEvent.name = newName;
+                        if (newTime) foundedEvent.time = newTime;
+                    }
+                    return event;
+                });
             this.notifyAboutChanging(events);
         };
 
         this.delete = function(name) {
-            var foundedEvent = events.filter(function(event) {
-                return event.name === name
+            var restEvents = events.filter(function(event) {
+                return event.name !== name
             });
-            var indexDeletedEvent = events.indexOf(foundedEvent[0]);
-            events.splice(indexDeletedEvent, 1);
 
-            this.notifyAboutChanging(events);
+            this.notifyAboutChanging(restEvents);
         };
 
         this.getAllEvents = function() {
