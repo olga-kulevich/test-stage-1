@@ -19,8 +19,16 @@ window.Calendar = (function() {
      *
      */
     function addEvent(time, name, func) {
-        var event = new Event(time, name, func);
-        eventsList.add(event);
+        if (typeof(name) == 'string' && typeof(time) == 'number' && typeof(func) == 'function') {
+            var event = new Event(time, name, func);
+            var foundedElements = eventsList.getAllEvents().filter(function(ev) {
+                return (ev.name === name)
+            });
+
+            if (foundedElements.length === 0) {
+                eventsList.add(event);
+            }
+        }
     }
 
     /**

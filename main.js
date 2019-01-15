@@ -123,3 +123,16 @@ console.log(Calendar.getEventsForPeriod(Math.floor((new Date).getTime() / 1000),
 
 console.log(Calendar.getEventsForPeriod(Math.floor((new Date).getTime() / 1000)));
 */
+
+//проверка добавления события
+/*
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 3), "a",
+    function() {
+        console.log("callback 11111!")
+    });
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "a",
+    function() {
+        console.log("callback 22222!")
+    });
+Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "b", 5);
+*/
