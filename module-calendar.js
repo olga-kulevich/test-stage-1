@@ -1,30 +1,67 @@
 (function (global) {
   var EVENT_LIST = [];
+  var timerId;
 
   function Event(date, name, callback) {
     this.id = Date.now();
     this.date = date;
     this.name = name;
     this.callback = callback;
+    this.completed = false;
   }
 
   function Calendar() {}
 
-  global.Calendar = Calendar;
+  function startNewTimer() {
+    var notExecutedEvents;
+    var delay;
+    var nearestEvent;
+    var currentTime = Math.floor((new Date()).getTime() / 1000);
+
+    if (EVENT_LIST.length > 0) {
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+
+      notExecutedEvents = EVENT_LIST.filter(function (event) {
+        return !event.completed;
+      });
+
+      if (notExecutedEvents.length) {
+        nearestEvent = notExecutedEvents.reduce(function (event1, event2) {
+          return (event1.date < event2.date ? event1 : event2);
+        });
+      } else {
+        return;
+      }
+
+      delay = (nearestEvent.date - currentTime) * 1000;
+
+      timerId = setTimeout(function () {
+        nearestEvent.callback();
+        nearestEvent.completed = true;
+        startNewTimer();
+      }, delay);
+    }
+  }
 
   Calendar.prototype.addEvent = function (date, name, callback) {
+    var event;
     if (typeof (name) === 'string' && typeof (date) === 'number' && typeof (callback) === 'function') {
-      var event = new Event(date, name, callback);
+      event = new Event(date, name, callback);
       EVENT_LIST.push(event);
       // todo ls.save(EVENT_LIST);
+      startNewTimer();
       return event;
     }
+    return;
   };
 
   Calendar.prototype.deleteEvent = function (id) {
     EVENT_LIST = EVENT_LIST.filter(function (event) {
       return event.id !== id;
     });
+    startNewTimer();
   };
 
   Calendar.prototype.updateEvent = function (id, newName, newDate) {
@@ -32,6 +69,7 @@
       if (event.id === id) {
         return Object.assign({}, event, { name: newName, date: newDate });
       }
+      startNewTimer();
       return event;
     });
   };
@@ -88,5 +126,7 @@
       return (event.date > startOfPeriod && event.date < endOfPeriod);
     });
   };
+
+  global.Calendar = Calendar;
 
 }(typeof module !== 'undefined' ? module.exports : window));

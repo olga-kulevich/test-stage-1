@@ -90,7 +90,7 @@ console.log(Calendar.getEventsForMonth());
 
 //получить все события за текущую неделю
 
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 604820), "a",
+/*calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 604820), "a",
     function() {
         console.log("callback 11111!")
     });
@@ -104,7 +104,7 @@ calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "c",
     });
 
 console.log(calendar.getEventsForWeek());
-
+*/
 
 //получить все события за указанный период
 /*
