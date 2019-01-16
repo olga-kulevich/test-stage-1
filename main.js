@@ -1,3 +1,6 @@
+var calendar = new Calendar();
+window.calendar = calendar;
+
 // проверка удаления
 /*
 Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 7), "a",
@@ -86,22 +89,22 @@ console.log(Calendar.getEventsForMonth());
 */
 
 //получить все события за текущую неделю
-/*
-Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 604820), "a",
+
+calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 604820), "a",
     function() {
         console.log("callback 11111!")
     });
-Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 86400), "b",
+calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 86400), "b",
     function() {
         console.log("callback 22222!")
     });
-Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "c",
+calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "c",
     function() {
         console.log("callback 33333!")
     });
 
-console.log(Calendar.getEventsForWeek());
-*/
+console.log(calendar.getEventsForWeek());
+
 
 //получить все события за указанный период
 /*
@@ -135,4 +138,22 @@ Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "a",
         console.log("callback 22222!")
     });
 Calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "b", 5);
+*/
+
+
+//________________________________
+/*
+console.log(calendar.addEvent(Math.floor((new Date()).getTime() / 1000 + 2), 'a',
+  function () {
+    console.log('callback 22222!');
+}));
+var calendar = new Calendar();
+console.log(calendar.addEvent(Math.floor((new Date()).getTime() / 1000 + 3), 'b',
+  function () {
+      console.log('callback 33333!');
+  }));
+
+console.log(calendar.getEventList());
+
+//console.log(calendar.getEventsForDay());
 */
