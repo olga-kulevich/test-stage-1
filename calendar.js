@@ -1,4 +1,8 @@
-window.Calendar = (function() {
+(function(global) {
+    var EVENT_LIST = [];
+    var ls = {
+
+    };
 
     /**
      * @param {number} time
@@ -6,30 +10,39 @@ window.Calendar = (function() {
      * @param {function} func
      * @constructor
      */
-    function Event(time, name, func) {
-        this.time = time;
+    function Event(date, name, callback) {
+        this.id = Date.now();
+        this.date = date;
         this.name = name;
-        this.func = func;
+        this.callback = callback;
+        this.completed = false;
     }
 
     /**
      * @param {number} time
      * @param {string} name
      * @param {function} func
-     *
+     * @constructor
      */
-    function addEvent(time, name, func) {
+    function Calendar() {}
+
+    Calendar.prototype.addEvent = function addEvent(time, name, func) {
         if (typeof(name) == 'string' && typeof(time) == 'number' && typeof(func) == 'function') {
             var event = new Event(time, name, func);
-            var foundedElements = eventsList.getAllEvents().filter(function(ev) {
-                return (ev.name === name)
-            });
-
-            if (foundedElements.length === 0) {
-                eventsList.add(event);
-            }
+            EVENT_LIST.push(event);
+            ls.save(EVENT_LIST);
+            return event;
         }
+    };
+
+    Calendar.prototype.deleteEvent = function deleteEvent(id) {
+       EVENT_LIST = EVENT_LIST.filter(function(event) {
+            return event.id !== id
+        });
     }
+
+
+    global.Calendar = Calendar;
 
     /**
      * @param {string} name
@@ -193,7 +206,10 @@ window.Calendar = (function() {
                 var delay = (nearestTime - currentTime) * 1000;
 
                 timerId = setTimeout(function() {
+                    event.callback();
+                    console.log(event.name)
                     that.processEventsInTime(nearestTime)
+
                 }, delay);
             }
         };
