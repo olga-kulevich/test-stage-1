@@ -12,7 +12,8 @@
 
   function Calendar() {}
 
-  function startNewTimer() {
+  Calendar.prototype.findAndRunNearestEventForExecution = function () {
+    var that = this;
     var notExecutedEvents;
     var delay;
     var nearestEvent;
@@ -40,10 +41,10 @@
       timerId = setTimeout(function () {
         nearestEvent.callback();
         nearestEvent.completed = true;
-        startNewTimer();
+        that.findAndRunNearestEventForExecution();
       }, delay);
     }
-  }
+  };
 
   Calendar.prototype.addEvent = function (date, name, callback) {
     var event;
@@ -51,7 +52,7 @@
       event = new Event(date, name, callback);
       EVENT_LIST.push(event);
       // todo ls.save(EVENT_LIST);
-      startNewTimer();
+      this.findAndRunNearestEventForExecution();
       return event;
     }
     return;
@@ -61,7 +62,7 @@
     EVENT_LIST = EVENT_LIST.filter(function (event) {
       return event.id !== id;
     });
-    startNewTimer();
+    this.findAndRunNearestEventForExecution();
   };
 
   Calendar.prototype.updateEvent = function (id, newName, newDate) {
@@ -69,7 +70,7 @@
       if (event.id === id) {
         return Object.assign({}, event, { name: newName, date: newDate });
       }
-      startNewTimer();
+      this.findAndRunNearestEventForExecution();
       return event;
     });
   };
@@ -96,7 +97,7 @@
     var currentDay = currentTime.getDay();
     var distance;
 
-    currentTime.setHours(0,0,0,0);
+    currentTime.setHours(0, 0, 0, 0);
     distance = dayOfStartWeek - currentDay;
     startOfWeek.setDate(currentTime.getDate() + distance);
     endOfWeek.setDate(startOfWeek.getDate() + 7);
@@ -110,7 +111,7 @@
     var startOfMonth;
     var endOfMonth;
     var currentTime = new Date();
-    currentTime.setHours(0,0,0,0);
+    currentTime.setHours(0, 0, 0, 0);
     startOfMonth = currentTime.setDate(1) / 1000;
     endOfMonth = currentTime.setMonth(currentTime.getMonth() + 1) / 1000;
     return EVENT_LIST.filter(function (event) {

@@ -1,5 +1,11 @@
-var calendar = new Calendar();
-window.calendar = calendar;
+var reminder = new Reminder();
+
+window.reminder = reminder;
+
+
+
+
+
 
 // проверка удаления
 /*
