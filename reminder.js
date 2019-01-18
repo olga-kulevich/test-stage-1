@@ -13,6 +13,13 @@
   Reminder.prototype = Object.create(global.Calendar.prototype);
   Reminder.prototype.constructor = Reminder;
 
+  Reminder.prototype.createReminder = function (reminderTime, reminderCallback, id) {
+    time = reminderTime;
+    callback = reminderCallback;
+    idEvent = id;
+    that.startEvent();
+  };
+
   Reminder.prototype.startEvent = function () {
     var EVENT_LIST = that.getEventList();
     var currentTime = Math.floor((new Date()).getTime() / 1000);
@@ -29,32 +36,43 @@
         clearTimeout(timerId);
       }
 
-      notExecutedEvents = EVENT_LIST.filter(function (event) {
-        return !event.completed && !event.notified;
-      });
-
-      if (notExecutedEvents.length) {
-        nearestEvent = notExecutedEvents.reduce(function (event1, event2) {
-          return (event1.date < event2.date ? event1 : event2);
+      if (!idEvent) {
+        notExecutedEvents = EVENT_LIST.filter(function (event) {
+          return !event.completed && !event.notified;
         });
+        if (notExecutedEvents.length) {
+          nearestEvent = notExecutedEvents.reduce(function (event1, event2) {
+            return (event1.date < event2.date ? event1 : event2);
+          });
+          delay = (nearestEvent.date - currentTime - time) * 1000;
+
+          timerId = setTimeout(function () {
+            callback();
+            nearestEvent.notified = true;
+            that.startEvent();
+          }, delay);
+        } else {
+          return;
+        }
+      } else if (idEvent) {
+        notExecutedEvents = EVENT_LIST.filter(function (event) {
+          return !event.completed && !event.notified && event.id === idEvent;
+        });
+        if (notExecutedEvents.length) {
+          nearestEvent = notExecutedEvents[0];
+
+          delay = (nearestEvent.date - currentTime - time) * 1000;
+
+          timerId = setTimeout(function () {
+            callback();
+            nearestEvent.notified = true;
+            that.startEvent();
+          }, delay);
+        }
       } else {
         return;
       }
-
-      delay = (nearestEvent.date - currentTime - time) * 1000;
-
-      timerId = setTimeout(function () {
-        callback();
-        nearestEvent.notified = true;
-        that.startEvent();
-      }, delay);
     }
-  };
-
-  Reminder.prototype.createReminderForAllEvents = function (reminderTime, reminderCallback) {
-    time = reminderTime;
-    callback = reminderCallback;
-    that.startEvent();
   };
 
   global.Reminder = Reminder;
