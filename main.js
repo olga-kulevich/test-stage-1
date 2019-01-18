@@ -2,10 +2,20 @@ var reminder = new Reminder();
 
 window.reminder = reminder;
 
+//проверка работы globalreminder
+reminder.addEvent(Math.floor((new Date).getTime() / 1000 + 7), "a",
+  function() {
+      console.log("callback 11111")
+  });
 
+reminder.addEvent(Math.floor((new Date).getTime() / 1000 + 10), "b",
+  function() {
+      console.log("callback 22222")
+  });
 
-
-
+reminder.createReminderForAllEvents(1, function () {
+    console.log("reminder");
+});
 
 // проверка удаления
 /*

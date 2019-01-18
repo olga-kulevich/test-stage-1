@@ -1,6 +1,7 @@
 (function (global) {
   var EVENT_LIST = [];
   var timerId;
+  var that;
 
   function Event(date, name, callback) {
     this.id = Date.now();
@@ -10,10 +11,15 @@
     this.completed = false;
   }
 
-  function Calendar() {}
+  function Calendar() {
+    that = this;
+  }
 
-  Calendar.prototype.findAndRunNearestEventForExecution = function () {
-    var that = this;
+  Calendar.prototype.startEvent = function () {
+  };
+
+  function findAndRunNearestEventForExecution() {
+
     var notExecutedEvents;
     var delay;
     var nearestEvent;
@@ -41,10 +47,11 @@
       timerId = setTimeout(function () {
         nearestEvent.callback();
         nearestEvent.completed = true;
-        that.findAndRunNearestEventForExecution();
+        findAndRunNearestEventForExecution();
+        that.startEvent();
       }, delay);
     }
-  };
+  }
 
   Calendar.prototype.addEvent = function (date, name, callback) {
     var event;
@@ -52,7 +59,7 @@
       event = new Event(date, name, callback);
       EVENT_LIST.push(event);
       // todo ls.save(EVENT_LIST);
-      this.findAndRunNearestEventForExecution();
+      findAndRunNearestEventForExecution();
       return event;
     }
     return;
@@ -62,7 +69,7 @@
     EVENT_LIST = EVENT_LIST.filter(function (event) {
       return event.id !== id;
     });
-    this.findAndRunNearestEventForExecution();
+    findAndRunNearestEventForExecution();
   };
 
   Calendar.prototype.updateEvent = function (id, newName, newDate) {
@@ -70,7 +77,7 @@
       if (event.id === id) {
         return Object.assign({}, event, { name: newName, date: newDate });
       }
-      this.findAndRunNearestEventForExecution();
+      findAndRunNearestEventForExecution();
       return event;
     });
   };

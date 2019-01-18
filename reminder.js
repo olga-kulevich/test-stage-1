@@ -1,6 +1,7 @@
 (function (global) {
   var timerId;
   var time;
+  var idEvent;
   var callback;
   var that;
 
@@ -12,7 +13,7 @@
   Reminder.prototype = Object.create(global.Calendar.prototype);
   Reminder.prototype.constructor = Reminder;
 
-  function startReminder() {
+  Reminder.prototype.startEvent = function () {
     var EVENT_LIST = that.getEventList();
     var currentTime = Math.floor((new Date()).getTime() / 1000);
     var notExecutedEvents;
@@ -45,20 +46,15 @@
       timerId = setTimeout(function () {
         callback();
         nearestEvent.notified = true;
-        startReminder();
+        that.startEvent();
       }, delay);
     }
-  }
+  };
 
   Reminder.prototype.createReminderForAllEvents = function (reminderTime, reminderCallback) {
     time = reminderTime;
     callback = reminderCallback;
-    startReminder();
-  };
-
-  Reminder.prototype.findAndRunNearestEventForExecution = function () {
-    global.Calendar.prototype.findAndRunNearestEventForExecution.apply(this, arguments);
-    startReminder();
+    that.startEvent();
   };
 
   global.Reminder = Reminder;
