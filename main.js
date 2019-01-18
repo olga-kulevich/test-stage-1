@@ -5,22 +5,25 @@ window.reminder = reminder;
 //проверка работы globalreminder
 
 /*
-reminder.addEvent(Math.floor((new Date).getTime() / 1000 + 15), "a",
+reminder.addEvent(Math.floor((new Date).getTime() / 1000 + 60), "a",
   function() {
       console.log("callback 11111")
   });
 
-reminder.addEvent(Math.floor((new Date).getTime() / 1000 + 20), "b",
+reminder.addEvent(Math.floor((new Date).getTime() / 1000 + 50), "b",
   function() {
       console.log("callback 22222")
   });
 
 reminder.getEventList();
 
-reminder.deleteEvent()
+reminder.createGlobalReminder(1, function () {
+    console.log("reminderGLOB")}, 54);
 
-reminder.createReminder(1, function () {
+reminder.createReminderForEvent(1, function () {
     console.log("reminder")}, 54);
+
+reminder.deleteEvent()
 */
 
 // проверка удаления
