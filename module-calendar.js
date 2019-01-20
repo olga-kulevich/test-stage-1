@@ -4,7 +4,7 @@
   var that;
 
   function Event(date, name, callback) {
-    this.id = Date.now();
+    this.id = new Date().getTime() + '-' + Math.random().toFixed(36).substr(2, 10);
     this.date = date;
     this.name = name;
     this.callback = callback;
@@ -19,17 +19,16 @@
   };
 
   function findAndRunNearestEventForExecution() {
-
     var notExecutedEvents;
     var delay;
     var nearestEvent;
     var currentTime = Math.floor((new Date()).getTime() / 1000);
 
-    if (EVENT_LIST.length > 0) {
-      if (timerId) {
-        clearTimeout(timerId);
-      }
+    if (timerId) {
+      clearTimeout(timerId);
+    }
 
+    if (EVENT_LIST.length > 0) {
       notExecutedEvents = EVENT_LIST.filter(function (event) {
         return !event.completed;
       });

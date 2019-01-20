@@ -4,12 +4,8 @@
   var time;
   var globalCallback;
   var that;
-  var reminderList = [];
 
-  function Reminder() {
-    global.Calendar.apply(this, arguments);
-    that = this;
-  }
+  var reminderList = [];
 
   function ReminderForEvent(reminderTime, reminderCallback, eventId) {
     this.id = eventId;
@@ -18,13 +14,18 @@
     this.completed = false;
   }
 
+  function Reminder() {
+    global.Calendar.apply(this, arguments);
+    that = this;
+  }
+
   Reminder.prototype = Object.create(global.Calendar.prototype);
   Reminder.prototype.constructor = Reminder;
 
   Reminder.prototype.createGlobalReminder = function (reminderTime, reminderCallback) {
     time = reminderTime;
     globalCallback = reminderCallback;
-    that.startEvent();
+    that.startReminder();
   };
 
   Reminder.prototype.createReminderForEvent = function (
@@ -38,7 +39,7 @@
       eventId
     );
     reminderList.push(reminderForEvent);
-    that.startEvent();
+    that.startReminder();
     return reminderForEvent;
   };
 
@@ -53,11 +54,11 @@
       return;
     }
 
-    if (EVENT_LIST.length > 0) {
-      if (timerId) {
-        clearTimeout(timerId);
-      }
+    if (timerId) {
+      clearTimeout(timerId);
+    }
 
+    if (EVENT_LIST.length > 0) {
       notExecutedEvents = EVENT_LIST.filter(function (event) {
         return !event.completed && !event.notified;
       });
@@ -126,23 +127,27 @@
 
   Reminder.prototype.startEvent = function () {
     global.Calendar.prototype.startEvent.apply(this, arguments);
+    that.startReminder();
+  };
+
+  Reminder.prototype.startReminder = function () {
     startGlobalReminder();
     startReminderForEvent();
   };
 
   Reminder.prototype.addEvent = function (date, name, callback) {
     global.Calendar.prototype.addEvent.apply(this, arguments);
-    that.startEvent();
+    that.startReminder();
   };
 
   Reminder.prototype.updateEvent = function (id, newName, newDate) {
     global.Calendar.prototype.updateEvent.apply(this, arguments);
-    that.startEvent();
+    that.startReminder();
   };
 
   Reminder.prototype.deleteEvent = function (id) {
     global.Calendar.prototype.deleteEvent.apply(this, arguments);
-    that.startEvent();
+    that.startReminder();
   };
 
   global.Reminder = Reminder;

@@ -18,7 +18,7 @@ reminder.addEvent(Math.floor((new Date).getTime() / 1000 + 50), "b",
 reminder.getEventList();
 
 reminder.createGlobalReminder(1, function () {
-    console.log("reminderGLOB")}, 54);
+    console.log("reminderGLOB")});
 
 reminder.createReminderForEvent(1, function () {
     console.log("reminder")}, 54);
