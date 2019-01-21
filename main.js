@@ -1,10 +1,21 @@
-var reminder = new Reminder();
+var repeater = new Repeater();
 
-window.reminder = reminder;
+window.repeater = repeater;
 
-//проверка работы globalreminder
+//проверка посторяющихся событий
+/*
+repeater.addEvent(Math.floor((new Date()).getTime() + 60000), 'a',
+  function () {
+    console.log('callback 11111');
+  }, [1]);
+
+*/
+//проверка работы globalreminder && reminderForEvent
 
 /*
+var reminder = new Reminder();
+window.reminder = reminder;
+
 reminder.addEvent(Math.floor((new Date).getTime() / 1000 + 60), "a",
   function() {
       console.log("callback 11111")

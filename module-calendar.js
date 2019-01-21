@@ -135,5 +135,4 @@
   };
 
   global.Calendar = Calendar;
-
 }(typeof module !== 'undefined' ? module.exports : window));
