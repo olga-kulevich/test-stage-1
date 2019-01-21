@@ -2,9 +2,18 @@ var repeater = new Repeater();
 
 window.repeater = repeater;
 
+// проверяем candidate
+/*
+repeater.addRepeatedEvent(parseInt(+new Date() / 1000) + 10, 'a',
+  function () {
+    console.log('callback 11111');
+  }, [2, 3]);
+
+*/
+
 //проверка посторяющихся событий
 /*
-repeater.addEvent(Math.floor((new Date()).getTime() + 60000), 'a',
+repeater.addEvent(Math.floor((new Date()).getTime() + 30000), 'a',
   function () {
     console.log('callback 11111');
   }, [1]);
