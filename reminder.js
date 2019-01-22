@@ -25,7 +25,7 @@
   Reminder.prototype.createGlobalReminder = function (reminderTime, reminderCallback) {
     time = reminderTime;
     globalCallback = reminderCallback;
-    that.startReminder();
+    Reminder.prototype.startReminder();
   };
 
   Reminder.prototype.createReminderForEvent = function (
@@ -39,12 +39,12 @@
       eventId
     );
     reminderList.push(reminderForEvent);
-    that.startReminder();
+    Reminder.prototype.startReminder();
     return reminderForEvent;
   };
 
   function startGlobalReminder() {
-    var EVENT_LIST = that.getEventList();
+    var EVENT_LIST = Reminder.prototype.getEventList();
     var currentTime = Math.floor((new Date()).getTime() / 1000);
     var notExecutedEvents;
     var delay;
@@ -79,7 +79,7 @@
   }
 
   function startReminderForEvent() {
-    var EVENT_LIST = that.getEventList();
+    var EVENT_LIST = Reminder.prototype.getEventList();
     var currentTime = Math.floor((new Date()).getTime() / 1000);
     var notExecutedEvents;
     var remindersForNearestEvent;
@@ -127,7 +127,7 @@
 
   Reminder.prototype.startEvent = function () {
     global.Calendar.prototype.startEvent.apply(this, arguments);
-    that.startReminder();
+    Reminder.prototype.startReminder();
   };
 
   Reminder.prototype.startReminder = function () {
@@ -137,17 +137,16 @@
 
   Reminder.prototype.addEvent = function (date, name, callback) {
     global.Calendar.prototype.addEvent.apply(this, arguments);
-    that.startReminder();
   };
 
   Reminder.prototype.updateEvent = function (id, newName, newDate) {
     global.Calendar.prototype.updateEvent.apply(this, arguments);
-    that.startReminder();
+    Reminder.prototype.startReminder();
   };
 
   Reminder.prototype.deleteEvent = function (id) {
     global.Calendar.prototype.deleteEvent.apply(this, arguments);
-    that.startReminder();
+    Reminder.prototype.startReminder();
   };
 
   global.Reminder = Reminder;

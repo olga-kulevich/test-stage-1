@@ -2,13 +2,20 @@ var repeater = new Repeater();
 
 window.repeater = repeater;
 
-// проверяем candidate
+// проверяем сохзание повторящихся событий и удаление их
 /*
-repeater.addRepeatedEvent(parseInt(+new Date() / 1000) + 10, 'a',
+repeater.addRepeatedEvent(parseInt(+new Date() / 1000) + 30, 'a',
   function () {
     console.log('callback 11111');
   }, [2, 3]);
 
+repeater.addRepeatedEvent(parseInt(+new Date() / 1000) + 40, 'a',
+  function () {
+    console.log('callback 22222');
+  }, [5, 6]);
+
+repeater.getEventList();
+repeater.deleteEvent();
 */
 
 //проверка посторяющихся событий

@@ -47,7 +47,7 @@
         nearestEvent.callback();
         nearestEvent.completed = true;
         findAndRunNearestEventForExecution();
-        that.startEvent();
+        that.startEvent(nearestEvent);
       }, delay);
     }
   }
