@@ -45,7 +45,17 @@
     }
   };
 
-  Repeater.prototype.UpdateRepeatedEvent = function (id, newName, newDate, dates) {
+  Repeater.prototype.updateRepeatedEvent = function (id, newName, newDate, days) {
+    var i;
+    var cb;
+
+    for (i = 0; i < repeatEventList.length; i++) {
+      if (repeatEventList[i].ids.indexOf(id) !== -1) {
+        cb = repeatEventList[i].callback;
+      }
+    }
+    Repeater.prototype.deleteEvent(id);
+    Repeater.prototype.addRepeatedEvent(newDate, newName, cb, days);
   };
 
   Repeater.prototype.deleteEvent = function (id) {
@@ -53,16 +63,14 @@
     var j;
     var series;
 
-    for (i = 0; i < repeatEventList.length; i + 1) {
+    for (i = 0; i < repeatEventList.length; i++) {
       if (repeatEventList[i].ids.indexOf(id) !== -1) {
         series = repeatEventList[i];
-        console.log(series);
-        return;
       }
     }
 
     if (series) {
-      for (j = 0; j < series.ids.length; j + 1) {
+      for (j = 0; j < series.ids.length; j++) {
         global.Calendar.prototype.deleteEvent.call(this, series.ids[j]);
       }
       repeatEventList = repeatEventList.filter(function (seriesEv) {
