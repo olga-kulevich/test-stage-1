@@ -81,7 +81,6 @@
     var reminderCandidates;
     var nearestReminder;
     var delay;
-    var nearestEvent;
 
     if (EVENT_LIST.length > 0 && reminderList.length > 0) {
       if (timerIdEvent) {
