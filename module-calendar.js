@@ -59,7 +59,7 @@
       findAndRunNearestEventForExecution();
       return event;
     }
-    return;
+    return null;
   };
 
   Calendar.prototype.deleteEvent = function (id) {
@@ -107,7 +107,7 @@
     endOfWeek.setDate(startOfWeek.getDate() + 7);
 
     return EVENT_LIST.filter(function (event) {
-      return (event.date > startOfWeek / 1000 && event.date < endOfWeek / 1000)
+      return (event.date > startOfWeek / 1000 && event.date < endOfWeek / 1000);
     });
   };
 

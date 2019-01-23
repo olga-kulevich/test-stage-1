@@ -38,8 +38,6 @@
       }
       repeatEventList.push(seriaOfEvents);
       console.log(repeatEventList);
-    } else {
-      return;
     }
   };
 
@@ -47,7 +45,7 @@
     var i;
     var cb;
 
-    for (i = 0; i < repeatEventList.length; i++) {
+    for (i = 0; i < repeatEventList.length; i += 1) {
       if (repeatEventList[i].ids.indexOf(id) !== -1) {
         cb = repeatEventList[i].callback;
       }
@@ -61,14 +59,14 @@
     var j;
     var series;
 
-    for (i = 0; i < repeatEventList.length; i++) {
+    for (i = 0; i < repeatEventList.length; i += 1) {
       if (repeatEventList[i].ids.indexOf(id) !== -1) {
         series = repeatEventList[i];
       }
     }
 
     if (series) {
-      for (j = 0; j < series.ids.length; j++) {
+      for (j = 0; j < series.ids.length; j += 1) {
         global.Calendar.prototype.deleteEvent.call(this, series.ids[j]);
       }
       repeatEventList = repeatEventList.filter(function (seriesEv) {

@@ -85,7 +85,6 @@
     var nearestEvent;
 
     if (EVENT_LIST.length > 0 && reminderList.length > 0) {
-
       if (timerIdEvent) {
         clearTimeout(timerIdEvent);
       }
@@ -116,8 +115,6 @@
             startReminderForEvent();
           }, delay);
         }
-      } else {
-        return;
       }
     }
   }
