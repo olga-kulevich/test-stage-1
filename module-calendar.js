@@ -50,10 +50,10 @@
     }
   }
 
-  Calendar.prototype.addEvent = function (date, name, callback) {
+  Calendar.prototype.addEvent = function (options) {
     var event;
-    if (typeof (name) === 'string' && typeof (date) === 'number' && typeof (callback) === 'function') {
-      event = new Event(date, name, callback);
+    if (typeof (options.name) === 'string' && typeof (options.date) === 'number' && typeof (options.callback) === 'function') {
+      event = new Event(options.date, options.name, options.callback);
       EVENT_LIST.push(event);
       // todo ls.save(EVENT_LIST);
       findAndRunNearestEventForExecution();
@@ -62,17 +62,17 @@
     return null;
   };
 
-  Calendar.prototype.deleteEvent = function (id) {
+  Calendar.prototype.deleteEvent = function (options) {
     EVENT_LIST = EVENT_LIST.filter(function (event) {
-      return event.id !== id;
+      return event.id !== options.id;
     });
     findAndRunNearestEventForExecution();
   };
 
-  Calendar.prototype.updateEvent = function (id, newName, newDate) {
+  Calendar.prototype.updateEvent = function (options) {
     EVENT_LIST = EVENT_LIST.map(function (event) {
-      if (event.id === id) {
-        return Object.assign({}, event, { name: newName, date: newDate });
+      if (event.id === options.id) {
+        return Object.assign({}, event, { name: options.newName, date: options.newDate });
       }
       findAndRunNearestEventForExecution();
       return event;
@@ -123,12 +123,12 @@
     });
   };
 
-  Calendar.prototype.getEventsForPeriod = function (startOfPeriod, endOfPeriod) {
-    if (!startOfPeriod || !endOfPeriod) {
+  Calendar.prototype.getEventsForPeriod = function (options) {
+    if (!options.startOfPeriod || !options.endOfPeriod) {
       return console.error('error');
     }
     return EVENT_LIST.filter(function (event) {
-      return (event.date > startOfPeriod && event.date < endOfPeriod);
+      return (event.date > options.startOfPeriod && event.date < options.endOfPeriod);
     });
   };
 

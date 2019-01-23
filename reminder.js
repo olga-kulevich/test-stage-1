@@ -20,21 +20,19 @@
   Reminder.prototype = Object.create(parent.prototype);
   Reminder.prototype.constructor = Reminder;
 
-  Reminder.prototype.createGlobalReminder = function (reminderTime, reminderCallback) {
-    time = reminderTime;
-    globalCallback = reminderCallback;
+  Reminder.prototype.createGlobalReminder = function (options) {
+    time = options.reminderTime;
+    globalCallback = options.reminderCallback;
     Reminder.prototype.startReminder();
   };
 
   Reminder.prototype.createReminderForEvent = function (
-    reminderTimeForEvent,
-    reminderCallbackForEvent,
-    eventId
+    options
   ) {
     var reminderForEvent = new ReminderForEvent(
-      reminderTimeForEvent,
-      reminderCallbackForEvent,
-      eventId
+      options.reminderTimeForEvent,
+      options.reminderCallbackForEvent,
+      options.eventId
     );
     reminderList.push(reminderForEvent);
     Reminder.prototype.startReminder();
@@ -131,17 +129,17 @@
     startReminderForEvent();
   };
 
-  Reminder.prototype.addEvent = function (date, name, callback) {
+  Reminder.prototype.addEvent = function () {
     return parent.prototype.addEvent.apply(this, arguments);
   };
 
-  Reminder.prototype.updateEvent = function (id, newName, newDate) {
+  Reminder.prototype.updateEvent = function () {
     var result = parent.prototype.updateEvent.apply(this, arguments);
     Reminder.prototype.startReminder();
     return result;
   };
 
-  Reminder.prototype.deleteEvent = function (id) {
+  Reminder.prototype.deleteEvent = function () {
     var result = parent.prototype.deleteEvent.apply(this, arguments);
     Reminder.prototype.startReminder();
     return result;

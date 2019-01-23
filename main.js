@@ -3,92 +3,92 @@ window.calendar = calendar;
 
 //Добавление, удаление, обновление
 /*
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 15), "a",
-  function() {
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 15), name: "a",
+  callback: function() {
       console.log("callback 11111!")
-  });
+  }});
 
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 10), "b",
-  function() {
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 10), name: "b",
+  callback: function() {
       console.log("callback 22222!")
-  });
+  }});
 calendar.deleteEvent(id);
 
 calendar.getEventList();
 
-calendar.updateEvent(id, 'c', Math.floor((new Date).getTime() / 1000 + 2));
+calendar.updateEvent({id: id, newName: 'c', newDate: Math.floor((new Date).getTime() / 1000 + 2)});
 */
 
 //получить все события за текущий день
 /*
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 5), "a",
-    function() {
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 5), name: "a",
+    callback: function() {
         console.log("callback 11111!")
-    });
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 90000), "b",
-    function() {
+    }});
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 90000), name: "b",
+    callback: function() {
         console.log("callback 22222!")
-    });
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 86400), "c",
-    function() {
+    }});
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 86400), name: "c",
+    callback: function() {
         console.log("callback 33333!")
-    });
+    }});
 console.log(calendar.getEventsForDay());
 */
 
 //получить все события за текущую неделю
 
 /*
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 604820), "a",
-    function() {
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 604820), name: "a",
+    callback: function() {
         console.log("callback 11111!")
-    });
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 86400), "b",
-    function() {
+    }});
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 86400), name: "b",
+    callback: function() {
         console.log("callback 22222!")
-    });
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "c",
-    function() {
+    }});
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 2), name: "c",
+    callback: function() {
         console.log("callback 33333!")
-    });
+    }});
 
 console.log(calendar.getEventsForWeek());
 */
 
 //получить все события за текущий месяц
 /*
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2592005), "a",
-    function() {
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 2592005), name: "a",
+    callback: function() {
         console.log("callback 11111!")
-    });
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 86400), "b",
-    function() {
+    }});
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 86400), name: "b",
+    callback: function() {
         console.log("callback 22222!")
-    });
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "c",
-    function() {
+    }});
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 2), name: "c",
+    callback: function() {
         console.log("callback 33333!")
-    });
+    }});
 console.log(calendar.getEventsForMonth());
 */
 
 //получить все события за указанный период
 /*
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 604820), "a",
-    function () {
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 604820), name: "a",
+    callback: function () {
         console.log("callback 11111!")
-    });
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 86400), "b",
-    function () {
+    }});
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 86400), name: "b",
+    callback: function () {
         console.log("callback 22222!")
-    });
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 2), "c",
-    function () {
+    }});
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 2), name: "c",
+    callback: function () {
         console.log("callback 33333!")
-    });
+    }});
 
-console.log(calendar.getEventsForPeriod(Math.floor((new Date).getTime() / 1000),
-(Math.floor((new Date).getTime() / 1000) + 172800)));
+console.log(calendar.getEventsForPeriod({startOfPeriod: Math.floor((new Date).getTime() / 1000),
+endOfPeriod: (Math.floor((new Date).getTime() / 1000) + 172800)}));
 */
 
 //REMINDER. Создать события, создать ремайндер для всех событий и для конкретного.
@@ -96,23 +96,23 @@ console.log(calendar.getEventsForPeriod(Math.floor((new Date).getTime() / 1000),
 var reminder = new Reminder();
 window.reminder = reminder;
 
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 10), "a",
-  function() {
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 10), name: "a",
+  callback: function() {
       console.log("callback 11111")
-  });
+  }});
 
-calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 50), "b",
-  function() {
+calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 50), name: "b",
+  callback: function() {
       console.log("callback 22222")
-  });
+  }});
 
-calendar.createGlobalReminder(1, function () {
-    console.log("reminderGLOB")});
+calendar.createGlobalReminder({reminderTime: 1, reminderCallback: function () {
+    console.log("reminderGLOB")}});
 
 calendar.getEventList();
 
-calendar.createReminderForEvent(1, function () {
-    console.log("reminderForEvent")}, 54);
+calendar.createReminderForEvent({reminderTimeForEvent: 1, reminderCallbackForEvent: function () {
+    console.log("reminderForEvent")}, eventId: 54});
 
 calendar.deleteEvent();
 */
@@ -121,15 +121,15 @@ calendar.deleteEvent();
 
 // проверяем сохрание повторящихся событий и удаление их
 /*
-calendar.addRepeatedEvent(parseInt(+new Date() / 1000) + 10, 'a',
-  function () {
+calendar.addRepeatedEvent({date: parseInt(+new Date() / 1000) + 10, name: 'a',
+  callback: function () {
     console.log('callback 11111');
-  }, [2, 3]);
+  }, repeatedDays: [2, 3]});
 
-calendar.addRepeatedEvent(parseInt(+new Date() / 1000) + 12, 'b',
-  function () {
+calendar.addRepeatedEvent({date: parseInt(+new Date() / 1000) + 12, name: 'b',
+  callback: function () {
     console.log('callback 22222');
-  }, [5, 6]);
+  }, repeatedDays: [5, 6]});
 
 calendar.getEventList();
 calendar.deleteEvent();
