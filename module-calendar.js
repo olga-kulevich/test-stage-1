@@ -52,14 +52,23 @@
 
   Calendar.prototype.addEvent = function (options) {
     var event;
-    if (typeof (options.name) === 'string' && typeof (options.date) === 'number' && typeof (options.callback) === 'function') {
-      event = new Event(options.date, options.name, options.callback);
-      EVENT_LIST.push(event);
-      // todo ls.save(EVENT_LIST);
-      findAndRunNearestEventForExecution();
-      return event;
+    if (typeof (options.name) !== 'string') {
+      throw "name must be string";
     }
-    return null;
+    if (options.name === "") {
+      throw "name cannot be empty string";
+    }
+    if (typeof (options.date) !== 'number') {
+      throw "date must be number";
+    }
+    if (typeof (options.callback) !== 'function') {
+      throw "callback must be function";
+    }
+    event = new Event(options.date, options.name, options.callback);
+    EVENT_LIST.push(event);
+    // todo ls.save(EVENT_LIST);
+    findAndRunNearestEventForExecution();
+    return event;
   };
 
   Calendar.prototype.deleteEvent = function (options) {
