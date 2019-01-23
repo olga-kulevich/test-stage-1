@@ -81,6 +81,33 @@
     var reminderCandidates;
     var nearestReminder;
     var delay;
+    var findReminderWithNearestEvent = function() {
+      return notExecutedEvents.reduce(function (event1, event2) {
+        var remindersForEvent1 = reminderList.filter(function (reminder) {
+          return (reminder.id === event1.id && !reminder.completed);
+        });
+        var remindersForEvent2 = reminderList.filter(function (reminder) {
+          return (reminder.id === event2.id && !reminder.completed);
+        });
+        if (remindersForEvent1.length === 0) {
+          return event2;
+        }
+        if (remindersForEvent2.length === 0) {
+          return event1;
+        }
+
+        var nearestReminderForEvent1 = remindersForEvent1.reduce(function (reminder1, reminder2) {
+          return (reminder1.reminderTime < reminder2.reminderTime ? reminder1 : reminder2);
+        });
+        var nearestReminderForEvent2 = remindersForEvent2.reduce(function (reminder1, reminder2) {
+          return (reminder1.reminderTime < reminder2.reminderTime ? reminder1 : reminder2);
+        });
+
+        return (event1.time - nearestReminderForEvent1.reminderTime < event2.time - nearestReminderForEvent2.reminderTime
+          ? event1
+          : event2);
+      })
+    };
 
     if (EVENT_LIST.length === 0 || reminderList.length === 0) {
       return null;
@@ -98,31 +125,7 @@
       return;
     }
 
-    var eventWithNearestReminder = notExecutedEvents.reduce(function (event1, event2) {
-      var remindersForEvent1 = reminderList.filter(function (reminder) {
-        return (reminder.id === event1.id && !reminder.completed);
-      });
-      var remindersForEvent2 = reminderList.filter(function (reminder) {
-        return (reminder.id === event2.id && !reminder.completed);
-      });
-      if (remindersForEvent1.length === 0) {
-        return event2;
-      }
-      if (remindersForEvent2.length === 0) {
-        return event1;
-      }
-
-      var nearestReminderForEvent1 = remindersForEvent1.reduce(function (reminder1, reminder2) {
-        return (reminder1.reminderTime < reminder2.reminderTime ? reminder1 : reminder2);
-      });
-      var nearestReminderForEvent2 = remindersForEvent2.reduce(function (reminder1, reminder2) {
-        return (reminder1.reminderTime < reminder2.reminderTime ? reminder1 : reminder2);
-      });
-
-      return (event1.time - nearestReminderForEvent1.reminderTime < event2.time - nearestReminderForEvent2.reminderTime
-        ? event1
-        : event2);
-    });
+    var eventWithNearestReminder = findReminderWithNearestEvent();
 
     reminderCandidates = reminderList.filter(function (reminder) {
       return (reminder.id === eventWithNearestReminder.id && !reminder.completed);
