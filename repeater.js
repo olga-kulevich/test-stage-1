@@ -1,11 +1,12 @@
 (function (global) {
   var repeatEventList = [];
+  var parent = global.Calendar;
 
   function Repeater() {
-    global.Calendar.apply(this, arguments);
+    parent.apply(this, arguments);
   }
 
-  Repeater.prototype = Object.create(global.Calendar.prototype);
+  Repeater.prototype = Object.create(parent.prototype);
   Repeater.prototype.constructor = Repeater;
 
   Repeater.prototype.addRepeatedEvent = function (date, name, callback, repeatedDays) {
@@ -66,15 +67,15 @@
 
     if (series) {
       for (j = 0; j < series.ids.length; j += 1) {
-        global.Calendar.prototype.deleteEvent.call(this, series.ids[j]);
+        parent.prototype.deleteEvent.call(this, series.ids[j]);
       }
       repeatEventList = repeatEventList.filter(function (seriesEv) {
         return seriesEv.id !== series.id;
       });
     } else {
-      global.Calendar.prototype.deleteEvent.call(this, id);
+      parent.prototype.deleteEvent.call(this, id);
     }
   };
 
-  global.Repeater = Repeater;
+  global.Calendar = Repeater;
 }(typeof module !== 'undefined' ? module.exports : window));

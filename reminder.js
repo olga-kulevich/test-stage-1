@@ -4,6 +4,7 @@
   var time;
   var globalCallback;
   var reminderList = [];
+  var parent = global.Calendar;
 
   function ReminderForEvent(reminderTime, reminderCallback, eventId) {
     this.id = eventId;
@@ -13,10 +14,10 @@
   }
 
   function Reminder() {
-    global.Calendar.apply(this, arguments);
+    parent.apply(this, arguments);
   }
 
-  Reminder.prototype = Object.create(global.Calendar.prototype);
+  Reminder.prototype = Object.create(parent.prototype);
   Reminder.prototype.constructor = Reminder;
 
   Reminder.prototype.createGlobalReminder = function (reminderTime, reminderCallback) {
@@ -120,8 +121,9 @@
   }
 
   Reminder.prototype.startEvent = function () {
-    global.Calendar.prototype.startEvent.apply(this, arguments);
+    var result = parent.prototype.startEvent.apply(this, arguments);
     Reminder.prototype.startReminder();
+    return result;
   };
 
   Reminder.prototype.startReminder = function () {
@@ -130,18 +132,20 @@
   };
 
   Reminder.prototype.addEvent = function (date, name, callback) {
-    global.Calendar.prototype.addEvent.apply(this, arguments);
+    return parent.prototype.addEvent.apply(this, arguments);
   };
 
   Reminder.prototype.updateEvent = function (id, newName, newDate) {
-    global.Calendar.prototype.updateEvent.apply(this, arguments);
+    var result = parent.prototype.updateEvent.apply(this, arguments);
     Reminder.prototype.startReminder();
+    return result;
   };
 
   Reminder.prototype.deleteEvent = function (id) {
-    global.Calendar.prototype.deleteEvent.apply(this, arguments);
+    var result = parent.prototype.deleteEvent.apply(this, arguments);
     Reminder.prototype.startReminder();
+    return result;
   };
 
-  global.Reminder = Reminder;
+  global.Calendar = Reminder;
 }(typeof module !== 'undefined' ? module.exports : window));

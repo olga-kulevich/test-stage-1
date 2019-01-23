@@ -1,18 +1,5 @@
-//CALENDAR
 var calendar = new Calendar();
 window.calendar = calendar;
-
-//REMINDER
-/*
-var reminder = new Reminder();
-window.reminder = reminder;
-*/
-
-//REPEATER
-/*
-var repeater = new Repeater();
-window.repeater = repeater;
-*/
 
 //Добавление, удаление, обновление
 /*
@@ -109,43 +96,43 @@ console.log(calendar.getEventsForPeriod(Math.floor((new Date).getTime() / 1000),
 var reminder = new Reminder();
 window.reminder = reminder;
 
-reminder.addEvent(Math.floor((new Date).getTime() / 1000 + 60), "a",
+calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 10), "a",
   function() {
       console.log("callback 11111")
   });
 
-reminder.addEvent(Math.floor((new Date).getTime() / 1000 + 50), "b",
+calendar.addEvent(Math.floor((new Date).getTime() / 1000 + 50), "b",
   function() {
       console.log("callback 22222")
   });
 
-reminder.createGlobalReminder(1, function () {
+calendar.createGlobalReminder(1, function () {
     console.log("reminderGLOB")});
 
-reminder.getEventList();
+calendar.getEventList();
 
-reminder.createReminderForEvent(1, function () {
+calendar.createReminderForEvent(1, function () {
     console.log("reminderForEvent")}, 54);
 
-reminder.deleteEvent();
+calendar.deleteEvent();
 */
 
 //REPEATER
 
 // проверяем сохрание повторящихся событий и удаление их
 /*
-repeater.addRepeatedEvent(parseInt(+new Date() / 1000) + 10, 'a',
+calendar.addRepeatedEvent(parseInt(+new Date() / 1000) + 10, 'a',
   function () {
     console.log('callback 11111');
   }, [2, 3]);
 
-repeater.addRepeatedEvent(parseInt(+new Date() / 1000) + 12, 'b',
+calendar.addRepeatedEvent(parseInt(+new Date() / 1000) + 12, 'b',
   function () {
     console.log('callback 22222');
   }, [5, 6]);
 
-repeater.getEventList();
-repeater.deleteEvent();
+calendar.getEventList();
+calendar.deleteEvent();
 */
 
 //проверка посторяющихся событий
