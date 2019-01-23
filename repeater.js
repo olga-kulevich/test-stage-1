@@ -1,10 +1,8 @@
 (function (global) {
   var repeatEventList = [];
-  var that;
 
   function Repeater() {
     global.Calendar.apply(this, arguments);
-    that = this;
   }
 
   Repeater.prototype = Object.create(global.Calendar.prototype);

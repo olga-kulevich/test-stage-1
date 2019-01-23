@@ -3,8 +3,6 @@
   var timerIdEvent;
   var time;
   var globalCallback;
-  var that;
-
   var reminderList = [];
 
   function ReminderForEvent(reminderTime, reminderCallback, eventId) {
@@ -16,7 +14,6 @@
 
   function Reminder() {
     global.Calendar.apply(this, arguments);
-    that = this;
   }
 
   Reminder.prototype = Object.create(global.Calendar.prototype);

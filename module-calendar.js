@@ -1,7 +1,6 @@
 (function (global) {
   var EVENT_LIST = [];
   var timerId;
-  var that;
 
   function Event(date, name, callback) {
     this.id = new Date().getTime() + '-' + Math.random().toFixed(36).substr(2, 10);
@@ -12,7 +11,6 @@
   }
 
   function Calendar() {
-    that = this;
   }
 
   Calendar.prototype.startEvent = function () {
@@ -47,7 +45,7 @@
         nearestEvent.callback();
         nearestEvent.completed = true;
         findAndRunNearestEventForExecution();
-        that.startEvent(nearestEvent);
+        Calendar.prototype.startEvent();
       }, delay);
     }
   }
