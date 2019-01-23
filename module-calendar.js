@@ -74,9 +74,9 @@
       if (event.id === options.id) {
         return Object.assign({}, event, { name: options.newName, date: options.newDate });
       }
-      findAndRunNearestEventForExecution();
       return event;
     });
+    findAndRunNearestEventForExecution();
   };
 
   Calendar.prototype.getEventList = function () {
