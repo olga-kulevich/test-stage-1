@@ -37,7 +37,6 @@
         candidate.setDate(candidate.getDate() + 1);
       }
       repeatEventList.push(seriaOfEvents);
-      console.log(repeatEventList);
     }
   };
 
