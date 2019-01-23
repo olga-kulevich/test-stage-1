@@ -112,6 +112,24 @@ console.log(calendar.getEventList());
 
 */
 
+// сначала globalReminder, потом событие
+
+/*
+calendar.createGlobalReminder({
+  reminderTime: 1, reminderCallback: function () {
+    console.log("reminderGLOB")
+  }
+});
+
+calendar.addEvent({
+  date: Math.floor((new Date).getTime() / 1000 + 5), name: "a",
+  callback: function () {
+    console.log("callback 11111")
+  }
+});
+
+console.log(calendar.getEventList());
+*/
 /*
 // События с запутанными ремайндерами
 calendar.addEvent({date: Math.floor((new Date).getTime() / 1000 + 15), name: "a",

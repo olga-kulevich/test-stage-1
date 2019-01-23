@@ -40,7 +40,7 @@
   };
 
   function startGlobalReminder() {
-    var EVENT_LIST = Reminder.prototype.getEventList();
+    var EVENT_LIST = global.Calendar.prototype.getEventList();
     var currentTime = Math.floor((new Date()).getTime() / 1000);
     var notExecutedEvents;
     var delay;
@@ -75,7 +75,7 @@
   }
 
   function startReminderForEvent() {
-    var EVENT_LIST = Reminder.prototype.getEventList();
+    var EVENT_LIST = global.Calendar.prototype.getEventList();
     var currentTime = Math.floor((new Date()).getTime() / 1000);
     var notExecutedEvents;
     var reminderCandidates;
@@ -148,8 +148,8 @@
     }, delay);
   }
 
-  Reminder.prototype.startEvent = function () {
-    var result = parent.prototype.startEvent.apply(this, arguments);
+  Reminder.prototype.eventsUpdated = function () {
+    var result = parent.prototype.eventsUpdated.apply(this, arguments);
     Reminder.prototype.startReminder();
     return result;
   };
@@ -157,18 +157,6 @@
   Reminder.prototype.startReminder = function () {
     startGlobalReminder();
     startReminderForEvent();
-  };
-
-  Reminder.prototype.updateEvent = function () {
-    var result = parent.prototype.updateEvent.apply(this, arguments);
-    Reminder.prototype.startReminder();
-    return result;
-  };
-
-  Reminder.prototype.deleteEvent = function () {
-    var result = parent.prototype.deleteEvent.apply(this, arguments);
-    Reminder.prototype.startReminder();
-    return result;
   };
 
   global.Calendar = Reminder;

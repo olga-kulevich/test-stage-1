@@ -32,7 +32,7 @@
 
       while (candidate < dateAfterTwoYears) {
         if (options.repeatedDays.indexOf(candidate.getDay()) !== -1) {
-          newEvent = Repeater.prototype.addEvent({date: candidate.getTime() / 1000, name: options.name, callback: options.callback});
+          newEvent = global.Calendar.prototype.addEvent({date: candidate.getTime() / 1000, name: options.name, callback: options.callback});
           seriaOfEvents.ids.push(newEvent.id);
         }
         candidate.setDate(candidate.getDate() + 1);
@@ -50,7 +50,7 @@
         cb = repeatEventList[i].callback;
       }
     }
-    Repeater.prototype.deleteEvent(options);
+    global.Calendar.prototype.deleteEvent(options);
     Repeater.prototype.addRepeatedEvent({date: options.newDate, name: options.newName, callback: cb, repeatedDays: options.days});
   };
 
@@ -67,13 +67,13 @@
 
     if (series) {
       for (j = 0; j < series.ids.length; j += 1) {
-        parent.prototype.deleteEvent.call(this, {id: series.ids[j]});
+        global.Calendar.prototype.deleteEvent.call(this, {id: series.ids[j]});
       }
       repeatEventList = repeatEventList.filter(function (seriesEv) {
         return seriesEv.id !== series.id;
       });
     } else {
-      parent.prototype.deleteEvent.call(this, {id: options.id});
+      global.Calendar.prototype.deleteEvent.call(this, {id: options.id});
     }
   };
 

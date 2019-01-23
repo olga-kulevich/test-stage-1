@@ -13,7 +13,7 @@
   function Calendar() {
   }
 
-  Calendar.prototype.startEvent = function () {
+  Calendar.prototype.eventsUpdated = function () {
   };
 
   function findAndRunNearestEventForExecution() {
@@ -25,6 +25,8 @@
     if (timerId) {
       clearTimeout(timerId);
     }
+
+    global.Calendar.prototype.eventsUpdated();
 
     if (EVENT_LIST.length > 0) {
       notExecutedEvents = EVENT_LIST.filter(function (event) {
@@ -45,7 +47,6 @@
         nearestEvent.callback();
         nearestEvent.completed = true;
         findAndRunNearestEventForExecution();
-        Calendar.prototype.startEvent();
       }, delay);
     }
   }
