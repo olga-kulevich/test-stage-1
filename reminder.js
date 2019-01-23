@@ -159,10 +159,6 @@
     startReminderForEvent();
   };
 
-  Reminder.prototype.addEvent = function () {
-    return parent.prototype.addEvent.apply(this, arguments);
-  };
-
   Reminder.prototype.updateEvent = function () {
     var result = parent.prototype.updateEvent.apply(this, arguments);
     Reminder.prototype.startReminder();
