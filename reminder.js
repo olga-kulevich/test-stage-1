@@ -60,7 +60,6 @@
 
   function startGlobalReminder() {
     var EVENT_LIST = global.Calendar.prototype.getEventList();
-    var currentTime = Math.floor((new Date()).getTime() / 1000);
     var notExecutedEvents;
     var delay;
     var nearestEvent;
@@ -82,7 +81,7 @@
         nearestEvent = notExecutedEvents.reduce(function (event1, event2) {
           return (event1.date < event2.date ? event1 : event2);
         });
-        delay = (nearestEvent.date - currentTime - time) * 1000;
+        delay = (nearestEvent.date - Math.floor((new Date()).getTime() / 1000) - time) * 1000;
 
         timerId = setTimeout(function () {
           globalCallback();
@@ -95,7 +94,6 @@
 
   function startReminderForEvent() {
     var EVENT_LIST = global.Calendar.prototype.getEventList();
-    var currentTime = Math.floor((new Date()).getTime() / 1000);
     var notExecutedEvents;
     var reminderCandidates;
     var nearestReminder;
@@ -161,7 +159,7 @@
       return (reminder1.reminderTime < reminder2.reminderTime ? reminder1 : reminder2);
     });
 
-    delay = (eventWithNearestReminder.date - currentTime - nearestReminder.reminderTime) * 1000;
+    delay = (eventWithNearestReminder.date - Math.floor((new Date()).getTime() / 1000) - nearestReminder.reminderTime) * 1000;
 
     timerIdEvent = setTimeout(function () {
       nearestReminder.reminderCallback();
