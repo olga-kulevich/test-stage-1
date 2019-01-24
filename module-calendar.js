@@ -54,16 +54,16 @@
   Calendar.prototype.addEvent = function (options) {
     var event;
     if (typeof (options.name) !== 'string') {
-      throw "name must be string";
+      throw 'name must be string';
     }
-    if (options.name === "") {
-      throw "name cannot be empty string";
+    if (options.name === '') {
+      throw 'name cannot be empty string';
     }
     if (typeof (options.date) !== 'number') {
-      throw "date must be number";
+      throw 'date must be number';
     }
     if (typeof (options.callback) !== 'function') {
-      throw "callback must be function";
+      throw 'callback must be function';
     }
     event = new Event(options.date, options.name, options.callback);
     EVENT_LIST.push(event);
@@ -73,6 +73,12 @@
   };
 
   Calendar.prototype.deleteEvent = function (options) {
+    if (typeof (options.id) !== 'string') {
+      throw 'id must be string';
+    }
+    if (options.id === '') {
+      throw 'id cannot be empty string';
+    }
     EVENT_LIST = EVENT_LIST.filter(function (event) {
       return event.id !== options.id;
     });
@@ -80,6 +86,22 @@
   };
 
   Calendar.prototype.updateEvent = function (options) {
+    if (typeof (options.id) !== 'string') {
+      throw 'id must be string';
+    }
+    if (options.id === '') {
+      throw 'id cannot be empty string';
+    }
+    if (typeof (options.newName) !== 'string') {
+      throw 'name must be string';
+    }
+    if (options.newName === '') {
+      throw 'name cannot be empty string';
+    }
+    if (typeof (options.newDate) !== 'number') {
+      throw 'date must be number';
+    }
+
     EVENT_LIST = EVENT_LIST.map(function (event) {
       if (event.id === options.id) {
         return Object.assign({}, event, { name: options.newName, date: options.newDate });
@@ -135,7 +157,10 @@
 
   Calendar.prototype.getEventsForPeriod = function (options) {
     if (!options.startOfPeriod || !options.endOfPeriod) {
-      return console.error('error');
+      return console.error('enter startOfPeriod and endOfPeriod');
+    }
+    if (typeof (options.startOfPeriod) !== 'number' || typeof (options.endOfPeriod) !== 'number') {
+      throw 'startOfPeriod and endOfPeriod must be number';
     }
     return EVENT_LIST.filter(function (event) {
       return (event.date > options.startOfPeriod && event.date < options.endOfPeriod);
