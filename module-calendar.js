@@ -92,19 +92,33 @@
     if (options.id === '') {
       throw 'id cannot be empty string';
     }
-    if (typeof (options.newName) !== 'string') {
-      throw 'name must be string';
+    if (options.name) {
+      if (typeof (options.name) !== 'string') {
+        throw 'name must be string';
+      }
+      if (options.name === '') {
+        throw 'name cannot be empty string';
+      }
     }
-    if (options.newName === '') {
-      throw 'name cannot be empty string';
+    if (options.date) {
+      if (typeof (options.date) !== 'number') {
+        throw 'date must be number';
+      }
     }
-    if (typeof (options.newDate) !== 'number') {
-      throw 'date must be number';
+    if (options.callback) {
+      if (typeof (options.callback) !== 'function') {
+        throw 'callback must be function';
+      }
+    }
+    if (options.completed) {
+      if (typeof (options.completed) !== 'boolean') {
+        throw 'completed must be boolean';
+      }
     }
 
     EVENT_LIST = EVENT_LIST.map(function (event) {
       if (event.id === options.id) {
-        return Object.assign({}, event, { name: options.newName, date: options.newDate });
+        return Object.assign({}, event, options);
       }
       return event;
     });
@@ -112,7 +126,10 @@
   };
 
   Calendar.prototype.getEventList = function () {
-    return EVENT_LIST;
+    return EVENT_LIST.map(function (event) {
+      return Object.assign({}, event);
+    });
+
   };
 
   Calendar.prototype.getEventsForDay = function () {

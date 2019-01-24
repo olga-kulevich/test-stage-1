@@ -86,6 +86,7 @@
         timerId = setTimeout(function () {
           globalCallback();
           nearestEvent.notified = true;
+          global.Calendar.prototype.updateEvent(nearestEvent);
           startGlobalReminder();
         }, delay);
       }
