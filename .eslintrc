@@ -1,1 +1,4 @@
-{ "extends": "airbnb/legacy" }
+{
+  "extends": ["eslint:recommended"],
+  "plugins": ["es5"]
+}

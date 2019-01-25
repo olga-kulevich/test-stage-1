@@ -130,7 +130,7 @@ endOfPeriod: (Math.floor((new Date).getTime() / 1000) + 172800)}));
 */
 
 //REMINDER.
-//Создать события, создать ремайндер для всех событий и для конкретного.
+//Создать событий несколько, создать ремайндер для конкретного.
 /*
 calendar.addEvent({
   date: Math.floor((new Date).getTime() / 1000 + 10),
@@ -147,13 +147,6 @@ calendar.addEvent({
   }
 });
 
-calendar.createGlobalReminder({
-  reminderTime: 1,
-  reminderCallback: function () {
-    console.log('reminderGLOB');
-  }
-});
-
 calendar.createReminderForEvent({
   reminderTimeForEvent: 2,
   reminderCallbackForEvent: function () {
@@ -165,7 +158,7 @@ calendar.createReminderForEvent({
 console.log(calendar.getEventList());
 */
 
-// сначала globalReminder, потом событие
+// Создать сначала globalReminder, потом само событие
 /*
 calendar.createGlobalReminder({
   reminderTime: 1, reminderCallback: function () {
@@ -292,7 +285,7 @@ calendar.addRepeatedEvent({
 calendar.addRepeatedEvent({
   date: parseInt(+new Date() / 1000) + 10, name: 'a',
   callback: function () {
-    console.log('callback 11111');
+    console.log('callback Event1');
   }, repeatedDays: [(new Date()).getDay()]
 });
 

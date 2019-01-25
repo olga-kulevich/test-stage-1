@@ -16,10 +16,21 @@
   Calendar.prototype.eventsUpdated = function () {
   };
 
+  function findNearestEvent () {
+    var notExecutedEvents = EVENT_LIST.filter(function (event) {
+      return !event.completed;
+    });
+
+    if (notExecutedEvents.length) {
+      return notExecutedEvents.reduce(function (event1, event2) {
+        return (event1.date < event2.date ? event1 : event2);
+      });
+    } else {
+      return;
+    }
+  }
+
   function findAndRunNearestEventForExecution() {
-    var notExecutedEvents;
-    var delay;
-    var nearestEvent;
     var currentTime = Math.floor((new Date()).getTime() / 1000);
 
     if (timerId) {
@@ -28,20 +39,15 @@
 
     global.Calendar.prototype.eventsUpdated();
 
-    if (EVENT_LIST.length > 0) {
-      notExecutedEvents = EVENT_LIST.filter(function (event) {
-        return !event.completed;
-      });
+    if (EVENT_LIST.length) {
 
-      if (notExecutedEvents.length) {
-        nearestEvent = notExecutedEvents.reduce(function (event1, event2) {
-          return (event1.date < event2.date ? event1 : event2);
-        });
-      } else {
+      var nearestEvent = findNearestEvent();
+
+      if (!nearestEvent) {
         return;
       }
 
-      delay = (nearestEvent.date - currentTime) * 1000;
+      var delay = (nearestEvent.date - currentTime) * 1000;
 
       timerId = setTimeout(function () {
         nearestEvent.callback();
@@ -52,7 +58,6 @@
   }
 
   Calendar.prototype.addEvent = function (options) {
-    var event;
     if (typeof (options.name) !== 'string') {
       throw 'name must be string';
     }
@@ -65,9 +70,10 @@
     if (typeof (options.callback) !== 'function') {
       throw 'callback must be function';
     }
-    event = new Event(options.date, options.name, options.callback);
+    var event = new Event(options.date, options.name, options.callback);
     EVENT_LIST.push(event);
     // todo ls.save(EVENT_LIST);
+
     findAndRunNearestEventForExecution();
     return event;
   };
@@ -118,7 +124,7 @@
 
     EVENT_LIST = EVENT_LIST.map(function (event) {
       if (event.id === options.id) {
-        return Object.assign({}, event, options);
+        return Object.assign({}, event, { name: options.newName, date: options.newDate });
       }
       return event;
     });
@@ -148,10 +154,9 @@
     var endOfWeek = new Date();
     var dayOfStartWeek = 0;
     var currentDay = currentTime.getDay();
-    var distance;
 
     currentTime.setHours(0, 0, 0, 0);
-    distance = dayOfStartWeek - currentDay;
+    var distance = dayOfStartWeek - currentDay;
     startOfWeek.setDate(currentTime.getDate() + distance);
     endOfWeek.setDate(startOfWeek.getDate() + 7);
 
@@ -161,12 +166,11 @@
   };
 
   Calendar.prototype.getEventsForMonth = function () {
-    var startOfMonth;
-    var endOfMonth;
     var currentTime = new Date();
+
     currentTime.setHours(0, 0, 0, 0);
-    startOfMonth = currentTime.setDate(1) / 1000;
-    endOfMonth = currentTime.setMonth(currentTime.getMonth() + 1) / 1000;
+    var startOfMonth = currentTime.setDate(1) / 1000;
+    var endOfMonth = currentTime.setMonth(currentTime.getMonth() + 1) / 1000;
     return EVENT_LIST.filter(function (event) {
       return (event.date > startOfMonth && event.date < endOfMonth);
     });
@@ -174,7 +178,7 @@
 
   Calendar.prototype.getEventsForPeriod = function (options) {
     if (!options.startOfPeriod || !options.endOfPeriod) {
-      return console.error('enter startOfPeriod and endOfPeriod');
+      throw 'enter startOfPeriod and endOfPeriod';
     }
     if (typeof (options.startOfPeriod) !== 'number' || typeof (options.endOfPeriod) !== 'number') {
       throw 'startOfPeriod and endOfPeriod must be number';

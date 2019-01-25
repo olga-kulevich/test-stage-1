@@ -1,7 +1,7 @@
 (function (global) {
   var timerId;
   var timerIdEvent;
-  var time;
+  var timeToRemind;
   var globalCallback;
   var reminderList = [];
   var parent = global.Calendar;
@@ -27,15 +27,12 @@
     if (typeof (options.reminderCallback) !== 'function') {
       throw 'reminderCallback must be function';
     }
-    time = options.reminderTime;
+    timeToRemind = options.reminderTime;
     globalCallback = options.reminderCallback;
     Reminder.prototype.startReminder();
   };
 
-  Reminder.prototype.createReminderForEvent = function (
-    options
-  ) {
-    var reminderForEvent;
+  Reminder.prototype.createReminderForEvent = function (options) {
     if (typeof (options.reminderTimeForEvent) !== 'number') {
       throw 'date must be number';
     }
@@ -48,7 +45,7 @@
     if (options.eventId === '') {
       throw 'id cannot be empty string';
     }
-    reminderForEvent = new ReminderForEvent(
+    var reminderForEvent = new ReminderForEvent(
       options.reminderTimeForEvent,
       options.reminderCallbackForEvent,
       options.eventId
@@ -58,109 +55,127 @@
     return reminderForEvent;
   };
 
-  function startGlobalReminder() {
+  function findNearestEventForGlobalReminder () {
     var EVENT_LIST = global.Calendar.prototype.getEventList();
-    var notExecutedEvents;
-    var delay;
-    var nearestEvent;
+    var notExecutedEvents = EVENT_LIST.filter(function (event) {
+      return !event.completed && !event.notified;
+    });
 
-    if (!time || !globalCallback) {
+    if (!notExecutedEvents.length) {
       return;
     }
+    return notExecutedEvents.reduce(function (event1, event2) {
+      return (event1.date < event2.date ? event1 : event2);
+    });
+  }
 
+  function startGlobalReminder() {
+    var EVENT_LIST = global.Calendar.prototype.getEventList();
+    if (!timeToRemind || !globalCallback) {
+      return;
+    }
     if (timerId) {
       clearTimeout(timerId);
     }
+    if (!EVENT_LIST.length) {
+      return;
+    }
 
-    if (EVENT_LIST.length > 0) {
-      notExecutedEvents = EVENT_LIST.filter(function (event) {
-        return !event.completed && !event.notified;
+    var nearestEvent = findNearestEventForGlobalReminder();
+    var currentTime = Math.floor((new Date()).getTime() / 1000);
+
+    if (!nearestEvent) {
+      return;
+    }
+
+    var delay = (nearestEvent.date - currentTime - timeToRemind) * 1000;
+
+    timerId = setTimeout(function () {
+      globalCallback();
+      nearestEvent.notified = true;
+      global.Calendar.prototype.updateEvent(nearestEvent);
+      startGlobalReminder();
+    }, delay);
+  }
+
+  function findNotExecutedEvents () {
+    var EVENT_LIST = global.Calendar.prototype.getEventList();
+    return EVENT_LIST.filter(function (event) {
+      return !event.completed;
+    });
+  }
+
+  function findEventWithNearestReminder () {
+    var notExecutedEvents = findNotExecutedEvents();
+
+    return notExecutedEvents.reduce(function (event1, event2) {
+      var remindersForEvent1 = reminderList.filter(function (reminder) {
+        return (reminder.id === event1.id && !reminder.completed);
+      });
+      var remindersForEvent2 = reminderList.filter(function (reminder) {
+        return (reminder.id === event2.id && !reminder.completed);
+      });
+      if (remindersForEvent1.length === 0) {
+        return event2;
+      }
+      if (remindersForEvent2.length === 0) {
+        return event1;
+      }
+
+      var nearestReminderForEvent1 = remindersForEvent1.reduce(function (reminder1, reminder2) {
+        return (reminder1.reminderTime < reminder2.reminderTime ? reminder1 : reminder2);
+      });
+      var nearestReminderForEvent2 = remindersForEvent2.reduce(function (reminder1, reminder2) {
+        return (reminder1.reminderTime < reminder2.reminderTime ? reminder1 : reminder2);
       });
 
-      if (notExecutedEvents.length) {
-        nearestEvent = notExecutedEvents.reduce(function (event1, event2) {
-          return (event1.date < event2.date ? event1 : event2);
-        });
-        delay = (nearestEvent.date - Math.floor((new Date()).getTime() / 1000) - time) * 1000;
+      return (event1.time - nearestReminderForEvent1.reminderTime
+      < event2.time - nearestReminderForEvent2.reminderTime
+        ? event1
+        : event2);
+    });
+  }
 
-        timerId = setTimeout(function () {
-          globalCallback();
-          nearestEvent.notified = true;
-          global.Calendar.prototype.updateEvent(nearestEvent);
-          startGlobalReminder();
-        }, delay);
-      }
+  function findNearestReminder () {
+    var eventWithNearestReminder = findEventWithNearestReminder();
+
+    var reminderCandidates = reminderList.filter(function (reminder) {
+      return (reminder.id === eventWithNearestReminder.id && !reminder.completed);
+    });
+
+    if (!reminderCandidates.length) {
+      return null;
     }
+    return reminderCandidates.reduce(function (reminder1, reminder2) {
+      return (reminder1.reminderTime < reminder2.reminderTime ? reminder1 : reminder2);
+    });
   }
 
   function startReminderForEvent() {
     var EVENT_LIST = global.Calendar.prototype.getEventList();
-    var notExecutedEvents;
-    var reminderCandidates;
-    var nearestReminder;
-    var eventWithNearestReminder;
-    var delay;
-    var findReminderWithNearestEvent = function () {
-      var nearestReminderForEvent1;
-      var nearestReminderForEvent2;
-      return notExecutedEvents.reduce(function (event1, event2) {
-        var remindersForEvent1 = reminderList.filter(function (reminder) {
-          return (reminder.id === event1.id && !reminder.completed);
-        });
-        var remindersForEvent2 = reminderList.filter(function (reminder) {
-          return (reminder.id === event2.id && !reminder.completed);
-        });
-        if (remindersForEvent1.length === 0) {
-          return event2;
-        }
-        if (remindersForEvent2.length === 0) {
-          return event1;
-        }
 
-        nearestReminderForEvent1 = remindersForEvent1.reduce(function (reminder1, reminder2) {
-          return (reminder1.reminderTime < reminder2.reminderTime ? reminder1 : reminder2);
-        });
-        nearestReminderForEvent2 = remindersForEvent2.reduce(function (reminder1, reminder2) {
-          return (reminder1.reminderTime < reminder2.reminderTime ? reminder1 : reminder2);
-        });
-
-        return (event1.time - nearestReminderForEvent1.reminderTime
-          < event2.time - nearestReminderForEvent2.reminderTime
-          ? event1
-          : event2);
-      });
-    };
-
-    if (EVENT_LIST.length === 0 || reminderList.length === 0) {
+    if (!EVENT_LIST.length || !reminderList.length) {
       return null;
     }
     if (timerIdEvent) {
       clearTimeout(timerIdEvent);
     }
 
-    notExecutedEvents = EVENT_LIST.filter(function (event) {
-      return !event.completed;
-    });
+    var notExecutedEvents = findNotExecutedEvents();
 
-    if (notExecutedEvents.length === 0) {
+    if (!notExecutedEvents.length) {
       return;
     }
 
-    eventWithNearestReminder = findReminderWithNearestEvent();
+    var eventWithNearestReminder = findEventWithNearestReminder();
+    var nearestReminder = findNearestReminder();
 
-    reminderCandidates = reminderList.filter(function (reminder) {
-      return (reminder.id === eventWithNearestReminder.id && !reminder.completed);
-    });
-
-    if (reminderCandidates.length === 0) {
-      return null;
+    if (!nearestReminder) {
+      return;
     }
 
-    nearestReminder = reminderCandidates.reduce(function (reminder1, reminder2) {
-      return (reminder1.reminderTime < reminder2.reminderTime ? reminder1 : reminder2);
-    });
-
-    delay = (eventWithNearestReminder.date - Math.floor((new Date()).getTime() / 1000) - nearestReminder.reminderTime) * 1000;
+    var currentTime = Math.floor((new Date()).getTime() / 1000);
+    var delay = (eventWithNearestReminder.date - currentTime - nearestReminder.reminderTime) * 1000;
 
     timerIdEvent = setTimeout(function () {
       nearestReminder.reminderCallback();

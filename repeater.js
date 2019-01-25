@@ -10,11 +10,7 @@
   Repeater.prototype.constructor = Repeater;
 
   Repeater.prototype.addRepeatedEvent = function (options) {
-    var seriaOfEvents = {};
-    var newEvent;
     var dateNow = new Date();
-    var candidate;
-    var dateAfterTwoYears;
 
     if (typeof (options.name) !== 'string') {
       throw 'name must be string';
@@ -32,7 +28,7 @@
       throw 'repeatedDays must be array with day numbers';
     }
 
-    seriaOfEvents = {
+    var seriaOfRepeatedEvents = {
       id: new Date().getTime() + '-' + Math.random().toFixed(36).substr(2, 10),
       time: options.date,
       name: options.name,
@@ -41,27 +37,25 @@
       ids: []
     };
 
-    candidate = new Date(options.date * 1000);
-    dateAfterTwoYears = new Date(dateNow.setFullYear(dateNow.getFullYear() + 2));
+    var candidateDate = new Date(options.date * 1000);
+    var dateAfterTwoYears = new Date(dateNow.setFullYear(dateNow.getFullYear() + 2));
 
-    while (candidate < dateAfterTwoYears) {
-      if (options.repeatedDays.indexOf(candidate.getDay()) !== -1) {
-        newEvent = global.Calendar.prototype.addEvent({
-          date: candidate.getTime() / 1000,
+    while (candidateDate < dateAfterTwoYears) {
+      if (options.repeatedDays.indexOf(candidateDate.getDay()) !== -1) {
+        var newEvent = global.Calendar.prototype.addEvent({
+          date: candidateDate.getTime() / 1000,
           name: options.name,
           callback: options.callback
         });
-        seriaOfEvents.ids.push(newEvent.id);
+        seriaOfRepeatedEvents.ids.push(newEvent.id);
       }
-      candidate.setDate(candidate.getDate() + 1);
+      candidateDate.setDate(candidateDate.getDate() + 1);
     }
-    repeatEventList.push(seriaOfEvents);
+
+    repeatEventList.push(seriaOfRepeatedEvents);
   };
 
   Repeater.prototype.updateRepeatedEvent = function (options) {
-    var i;
-    var cb;
-
     if (typeof (options.id) !== 'string') {
       throw 'id must be string';
     }
@@ -81,11 +75,12 @@
       throw 'days must be array with day numbers';
     }
 
-    for (i = 0; i < repeatEventList.length; i += 1) {
+    for (var i = 0; i < repeatEventList.length; i++) {
       if (repeatEventList[i].ids.indexOf(options.id) !== -1) {
-        cb = repeatEventList[i].callback;
+        var cb = repeatEventList[i].callback;
       }
     }
+
     global.Calendar.prototype.deleteEvent(options);
     Repeater.prototype.addRepeatedEvent({
       date: options.newDate,
@@ -106,9 +101,6 @@
     if (options.id === '') {
       throw 'id cannot be empty string';
     }
-    if (options.single) {
-      return parent.prototype.deleteEvent.call(this, { id: options.id, single: true });
-    }
 
     for (i = 0; i < repeatEventList.length; i += 1) {
       if (repeatEventList[i].ids.indexOf(options.id) !== -1) {
@@ -118,13 +110,13 @@
 
     if (series) {
       for (j = 0; j < series.ids.length; j += 1) {
-        global.Calendar.prototype.deleteEvent.call(this, { id: series.ids[j], single: true });
+        parent.prototype.deleteEvent.call(this, { id: series.ids[j] });
       }
       repeatEventList = repeatEventList.filter(function (seriesEv) {
         return seriesEv.id !== series.id;
       });
     } else {
-      global.Calendar.prototype.deleteEvent.call(this, { id: options.id, single: true });
+      return parent.prototype.deleteEvent.call(this, { id: options.id });
     }
   };
 
