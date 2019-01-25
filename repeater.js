@@ -91,10 +91,6 @@
   };
 
   Repeater.prototype.deleteEvent = function (options) {
-    var i;
-    var j;
-    var series;
-
     if (typeof (options.id) !== 'string') {
       throw 'id must be string';
     }
@@ -102,18 +98,18 @@
       throw 'id cannot be empty string';
     }
 
-    for (i = 0; i < repeatEventList.length; i += 1) {
+    for (var i = 0; i < repeatEventList.length; i++) {
       if (repeatEventList[i].ids.indexOf(options.id) !== -1) {
-        series = repeatEventList[i];
+        var seriesRepeatedEvents = repeatEventList[i];
       }
     }
 
-    if (series) {
-      for (j = 0; j < series.ids.length; j += 1) {
-        parent.prototype.deleteEvent.call(this, { id: series.ids[j] });
+    if (seriesRepeatedEvents) {
+      for (var j = 0; i < seriesRepeatedEvents.ids.length; j++) {
+        parent.prototype.deleteEvent.call(this, { id: seriesRepeatedEvents.ids[j] });
       }
       repeatEventList = repeatEventList.filter(function (seriesEv) {
-        return seriesEv.id !== series.id;
+        return seriesEv.id !== seriesRepeatedEvents.id;
       });
     } else {
       return parent.prototype.deleteEvent.call(this, { id: options.id });
